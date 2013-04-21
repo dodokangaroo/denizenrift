@@ -5,15 +5,14 @@
 
 bmpentities = new Bitmap 'img/entities.png'
 bmpmap = new Bitmap 'img/map.png'
-bmptowers = new Bitmap 'img/tower.png'
 
 class Game
 
 	entities: []
+	lastX: -1
+	lastY: -1
 
-	tower: null
-
-	constructor: (@user, @heroclass) ->
+	constructor: (@sio, @user, @heroclass, @userlist) ->
 
 		@container = $('.dr')
 		@canvas = $('.dr .canvas')[0]
@@ -33,6 +32,11 @@ class Game
 		@entities.push @map
 		@entities.push @hero
 
+		for u in @userlist
+			h = new Hero bmpentities, u.heroclass
+			h.x = u.x
+			h.y = u.y
+			@entities.push h
 	run: ->
 		@loop()
 
@@ -44,5 +48,12 @@ class Game
 		for e in @entities
 			e.update()
 			e.draw @renderer.ctx
+
+		if lastX != @hero.x or lastY != @hero.y
+
+			lastX = @hero.x
+			lastY = @hero.y
+
+			@sio.emit 'mv', @hero.x, @hero.y
 
 window.Game = Game

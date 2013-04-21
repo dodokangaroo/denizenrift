@@ -1,13 +1,23 @@
 #= require game
 
 sio = null
+game = null
+userlist = []
 
 $().ready ->
 
 	login (user) ->
-		selectHero user, (hero) ->
-			game = new Game user, hero
+		selectHero user, (heroclass) ->
+			sio.emit 'setclass', heroclass
+
+			game = new Game sio, user, heroclass, userlist
 			game.run()
+
+		sio.on 'userlist', (users) =>
+			userlist = users
+
+		sio.on 'userjoin', (user) =>
+			userlist.push user
 
 login = (fn) =>
 

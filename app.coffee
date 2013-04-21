@@ -41,7 +41,7 @@ server = app.listen 80, =>
 	console.log "Express server listening on port %d in %s mode", server.address().port, app.settings.env
 
 io = sio.listen server
-io.set 'log level', 1
+io.set 'log level', 1 #disable logging
 
 app.get root + '/', require('./routes/index')
 
