@@ -1,19 +1,26 @@
-auth = require './auth'
-
 class Server
 
+	auth = require './auth'
 	users: []
 
-	constructor: (@sio) ->
+	constructor: (@server, @io) ->
 
+		@io.on 'connection', (socket) =>
 
-	login: (user, pass, fn) =>
+			socket.on 'register', auth.register
+			socket.on 'login', @login
+			socket.server = @
+
+	login: (user, pass, fn) ->
+
+		server = @server
+
 		auth.login user, pass, (res) =>
 
 			if res.success
-				@users.push res.user
+				server.users.push res.user
 
-				for user in users
+				for user in server.users
 					if user isnt res.user
 						console.log user.name
 

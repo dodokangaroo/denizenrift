@@ -1,6 +1,7 @@
 express = require 'express'
 http = require 'http'
 gzippo = require 'gzippo'
+sio = require 'socket.io'
 
 app = express()
 
@@ -39,7 +40,10 @@ app.configure 'production', ->
 server = app.listen 80, =>
 	console.log "Express server listening on port %d in %s mode", server.address().port, app.settings.env
 
+io = sio.listen server
+io.set 'log level', 1
+
 app.get root + '/', require('./routes/index')
 
 Server = require './server/server'
-#s = new Server server
+new Server server, io

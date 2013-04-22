@@ -1,5 +1,7 @@
 #= require game
 
+sio = null
+
 $().ready ->
 
 	login (user) ->
@@ -7,61 +9,63 @@ $().ready ->
 			game = new Game user, hero
 			game.run()
 
-login = (fn) ->
+login = (fn) =>
 
-	#show spinner while nowjs connects
+	#show spinner while sio.io connects
 	$('.login').removeClass 'invisible'
 
-	now.ready ->
+	sio = io.connect 'http://localhost/'
+	sio.on 'connect', onLogin fn
 
-		$('.input').removeClass 'invisible'
-		$('.spinner').addClass 'invisible'
+onLogin = (fn) =>
 
-		$(document).keydown (e) =>
-			if e.which is Key.ENTER
-				$('.btnlogin').click()
+	$('.input').removeClass 'invisible'
+	$('.spinner').addClass 'invisible'
 
-		$('.btnlogin').click =>
+	$(document).keydown (e) =>
+		if e.which is Key.ENTER
+			$('.btnlogin').click()
 
-			user = $('.txtusername').val()
-			pass = $('.txtpassword').val()
+	$('.btnlogin').click =>
 
-			$('.txtusername').removeClass 'error'
-			$('.txtpassword').removeClass 'error'
+		user = $('.txtusername').val()
+		pass = $('.txtpassword').val()
 
-			err = false
+		$('.txtusername').removeClass 'error'
+		$('.txtpassword').removeClass 'error'
 
-			$('.txtstatus').html ''
+		err = false
 
-			if user.length < 4
-				err = true
-				$('.txtusername').addClass 'error'
-				$('.txtstatus').append '<p>Username must be 4 or more chars</p>'
-			if pass.length < 6
-				err = true
-				$('.txtpassword').addClass 'error'
-				$('.txtstatus').append '<p>Password must be 6 or more chars</p>'
+		$('.txtstatus').html ''
 
-			if !err
-				$('.input').addClass 'invisible'
-				$('.spinner').removeClass 'invisible'
+		if user.length < 4
+			err = true
+			$('.txtusername').addClass 'error'
+			$('.txtstatus').append '<p>Username must be 4 or more chars</p>'
+		if pass.length < 6
+			err = true
+			$('.txtpassword').addClass 'error'
+			$('.txtstatus').append '<p>Password must be 6 or more chars</p>'
 
-				$('.txtpassword').val ''
+		if !err
+			$('.input').addClass 'invisible'
+			$('.spinner').removeClass 'invisible'
 
-				now.login user, pass, (res) =>
-					
-					if res.success
-						$('.login').addClass 'invisible'
+			$('.txtpassword').val ''
 
-						$(document).unbind 'keydown'
-						$('.btnlogin').unbind 'click'
+			sio.emit 'login', user, pass, (res) =>
+				
+				if res.success
+					$('.login').addClass 'invisible'
 
+					$(document).unbind 'keydown'
+					$('.btnlogin').unbind 'click'
 
-						fn res.user
-					else
-						$('.input').removeClass 'invisible'
-						$('.spinner').addClass 'invisible'
-						$('.txtstatus').html 'Authentication failed'
+					fn res.user
+				else
+					$('.input').removeClass 'invisible'
+					$('.spinner').addClass 'invisible'
+					$('.txtstatus').html 'Authentication failed'
 
 selectHero = (user, fn) ->
 
