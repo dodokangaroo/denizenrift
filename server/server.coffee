@@ -10,38 +10,43 @@ class Server
 
 		@io.on 'connection', (socket) =>
 
-			#need to add disconnect handle
+			id = @uniqueID++
+
 			socket.on 'register', (name, pass, fn) =>
 				@register socket, name, pass, fn
 
 			socket.on 'login', (name, pass, fn) =>
-				user = @login socket, name, pass, fn
+				user = @login socket, id, name, pass, fn
 
 				if user?
 
-					socket.on 'setclass', (heroclass) ->
+					socket.on 'setclass', (heroclass) =>
 						user.heroclass = heroclass
 						socket.broadcast.emit 'setclass', user.compress()
 
-					socket.on 'mv', (x, y) ->
+					socket.on 'mv', (x, y) =>
 						user.x = x
 						user.y = y
 						socket.broadcast.emit 'mv', user.compress()
 
+			socket.on 'disconnect', =>
+				socket.broadcast.emit 'userleft', id
+				delete @users[id] if @users[id]?
+
 			socket.server = @
 
-	login: (socket, name, pass, fn) ->
+	login: (socket, id, name, pass, fn) ->
 		auth.login name, pass, (res) =>
 
 			fn res
 
 			if res.success
-				user = new User socket, @uniqueID++, name
-				@users.push user
+				user = new User socket, id, name
+				@users[user.id] = user
 
 				excludes = []
 
-				excludes.push u.compress() for u in @users when u isnt user
+				excludes.push u.compress() for u in @users when u isnt user and u?
 
 				socket.emit 'userlist', excludes
 				socket.broadcast.emit 'userjoin', user.compress()

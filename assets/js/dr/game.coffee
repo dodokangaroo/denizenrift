@@ -51,6 +51,12 @@ class Game
 		@sio.on 'userjoin', (u) =>
 			@addUser u
 
+		@sio.on 'userleft', (id) =>
+			user = @users[id]
+			return if !user? #error user doesnt exist
+			@entities.splice @entities.indexOf(user), 1
+			delete @users[id]
+
 	addUser: (u) =>
 		h = new Hero bmpentities, u.heroclass
 		h.x = u.x
