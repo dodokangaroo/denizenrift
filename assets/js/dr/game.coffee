@@ -9,6 +9,8 @@ bmpmap = new Bitmap 'img/map.png'
 class Game
 
 	entities: []
+	users: {}
+
 	lastX: -1
 	lastY: -1
 
@@ -33,10 +35,29 @@ class Game
 		@entities.push @hero
 
 		for u in @userlist
-			h = new Hero bmpentities, u.heroclass
-			h.x = u.x
-			h.y = u.y
-			@entities.push h
+			@addUser u
+
+		@sio.on 'mv', (u) =>
+			user = @users[u.id]
+			return if !user? #error user doesnt exist
+			user.x = u.x
+			user.y = u.y
+
+		@sio.on 'setclass', (u) =>
+			user = @users[u.id]
+			return if !user? #error user doesnt exist
+			user.setClass u.heroclass
+
+		@sio.on 'userjoin', (u) =>
+			@addUser u
+
+	addUser: (u) =>
+		h = new Hero bmpentities, u.heroclass
+		h.x = u.x
+		h.y = u.y
+		@entities.push h
+		@users[u.id] = h
+
 	run: ->
 		@loop()
 

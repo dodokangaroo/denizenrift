@@ -1,16 +1,18 @@
 class User
 
 	socket: null
+	id: 0
 	name: null
 	x: 0
 	y: 0
-	heroclass: null
+	heroclass: 0
 
-	constructor: (@socket, @name) ->
+	constructor: (@socket, @id, @name) ->
 
 	#remove unwanted vars
 	compress: ->
 		{
+			id: @id
 			name: @name
 			x: @x
 			y: @y

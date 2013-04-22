@@ -4,11 +4,13 @@ User = require './user'
 class Server
 
 	users: []
+	uniqueID: 0
 
 	constructor: (@server, @io) ->
 
 		@io.on 'connection', (socket) =>
 
+			#need to add disconnect handle
 			socket.on 'register', (name, pass, fn) =>
 				@register socket, name, pass, fn
 
@@ -34,14 +36,12 @@ class Server
 			fn res
 
 			if res.success
-				user = new User socket, name
+				user = new User socket, @uniqueID++, name
 				@users.push user
 
 				excludes = []
 
 				excludes.push u.compress() for u in @users when u isnt user
-
-				console.log JSON.stringify excludes
 
 				socket.emit 'userlist', excludes
 				socket.broadcast.emit 'userjoin', user.compress()

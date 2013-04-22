@@ -16,11 +16,13 @@ class Hero extends Sprite
 
 	constructor: (bitmap, @heroclass) ->
 		super bitmap
+		@setClass @heroclass
 
-		@sx = Config.GraphicOffset.Classes[@heroclass].x
-		@sy = Config.GraphicOffset.Classes[@heroclass].y
+	setClass: (heroclass) =>
+		@sx = Config.GraphicOffset.Classes[heroclass].x
+		@sy = Config.GraphicOffset.Classes[heroclass].y
 
-		@basex = Config.GraphicOffset.Classes[@heroclass].x
+		@basex = Config.GraphicOffset.Classes[heroclass].x
 
 	update: =>
 
