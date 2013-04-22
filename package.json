@@ -1,0 +1,23 @@
+{
+  "name": "game-off-2012",
+  "version": "0.0.0",
+  "description": "An HTML5 Multiplayer Game",
+  "main": "app.coffee",
+  "dependencies": {
+    "connect-assets": "~2.4.1",
+    "connect-redis": "~1.4.5",
+    "express": "~3.2.0",
+    "gzippo": "~0.2.0",
+    "jade": "~0.29.0",
+    "stylus": "~0.32.1",
+    "socket.io": "~0.9.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dodokangaroo/game-off-2012.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "2b7b6786988d959c2f8bc8bdac47be65261e6305"
+}

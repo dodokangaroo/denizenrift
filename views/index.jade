@@ -1,0 +1,10 @@
+extends layout
+
+block append head
+	!= js('dr/dr')
+
+block body
+	.dr
+		canvas.canvas
+		include ui/login
+		include ui/selecthero

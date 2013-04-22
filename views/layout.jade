@@ -1,0 +1,14 @@
+!!!
+html
+	head
+		block head
+			title= title
+			!= css('style')
+			!= js('lib/jquery.min')
+			script(src='nowjs/now.js')
+	body
+		block header
+			include header
+		block body
+		block footer
+			include ./footer
