@@ -24,7 +24,7 @@ login = (fn) =>
 	#show spinner while sio.io connects
 	$('.login').removeClass 'invisible'
 
-	sio = io.connect 'http://localhost/'
+	sio = io.connect()
 	sio.on 'connect', onLogin fn
 
 onLogin = (fn) =>
