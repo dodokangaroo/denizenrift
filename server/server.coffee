@@ -6,7 +6,13 @@ class Server
 	users: []
 	uniqueID: 0
 
-	constructor: (@server, @io) ->
+	#all cmds client sends to server
+	cmds: [
+		require('./cmds/mv'),
+		require('./cmds/setclass')
+	]
+
+	constructor: (@express, @io) ->
 
 		@io.on 'connection', (socket) =>
 
@@ -20,20 +26,14 @@ class Server
 
 				if user?
 
-					socket.on 'setclass', (heroclass) =>
-						user.heroclass = heroclass
-						socket.broadcast.emit 'setclass', user.compress()
-
-					socket.on 'mv', (x, y) =>
-						user.x = x
-						user.y = y
-						socket.broadcast.emit 'mv', user.compress()
+					for cmd in @cmds
+						new cmd user, @
 
 			socket.on 'disconnect', =>
 				socket.broadcast.emit 'userleft', id
 				delete @users[id] if @users[id]?
 
-			socket.server = @
+			socket.express = @
 
 	login: (socket, id, name, pass, fn) ->
 		auth.login name, pass, (res) =>

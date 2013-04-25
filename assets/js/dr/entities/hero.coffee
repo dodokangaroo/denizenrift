@@ -35,19 +35,15 @@ class Hero extends Sprite
 			dx -= @speed if Input.keys[Key.A]
 			dx += @speed if Input.keys[Key.D]
 
+			# Checking if the user goes outside boundaries
+			dx = 0 if @x + dx < 0	
+			dx = 0 if @x + dx > 1024 - 16
+			dy = 0 if @y + dy < 0
+			dy = 0 if @y + dy > 640 - 16
+
 			if dx != 0 && dy != 0
 				dx *= Math.SQRT1_2
 				dy *= Math.SQRT1_2
-
-			# Checking if the user goes outside boundaries
-			if (@x + dx < 0)
-				@x = 0
-			if (@x + dx > 1024 - 16)
-				@x = 1024 - 16
-			if (@y + dy < 0)
-				@y = 0
-			if (@y + dy > 640 - 16)
-				@y = 640 - 16
 
 			@x += dx
 			@y += dy

@@ -2,6 +2,7 @@
 #= require_tree graphics
 #= require_tree entities
 #= require_tree data
+#= require_tree cmds
 
 bmpentities = new Bitmap 'img/entities.png'
 bmpmap = new Bitmap 'img/map.png'
@@ -37,25 +38,13 @@ class Game
 		for u in @userlist
 			@addUser u
 
-		@sio.on 'mv', (u) =>
-			user = @users[u.id]
-			return if !user? #error user doesnt exist
-			user.x = u.x
-			user.y = u.y
+		@setupCmds()
 
-		@sio.on 'setclass', (u) =>
-			user = @users[u.id]
-			return if !user? #error user doesnt exist
-			user.setClass u.heroclass
-
-		@sio.on 'userjoin', (u) =>
-			@addUser u
-
-		@sio.on 'userleft', (id) =>
-			user = @users[id]
-			return if !user? #error user doesnt exist
-			@entities.splice @entities.indexOf(user), 1
-			delete @users[id]
+	setupCmds: ->
+		new CmdMv @user, @, @sio
+		new CmdSetClass @user, @, @sio
+		new CmdUserJoin @user, @, @sio
+		new CmdUserLeft @user, @, @sio
 
 	addUser: (u) =>
 		h = new Hero bmpentities, u.heroclass

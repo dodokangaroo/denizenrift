@@ -42,6 +42,7 @@ server = app.listen 80, =>
 
 io = sio.listen server
 io.set 'log level', 1 #disable logging
+io.set 'close timeout', 10
 
 app.get root + '/', require('./routes/index')
 
