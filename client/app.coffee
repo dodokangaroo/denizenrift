@@ -9,6 +9,8 @@ userlist = []
 
 $().ready ->
 
+	alert 'tes3'
+
 	login (user) ->
 		selectHero user, (heroclass) ->
 			sio.emit 'setclass', heroclass
