@@ -52,14 +52,13 @@ class Game
 		@stage.addChild @map.spr
 		@entities.push @map
 
-		@hero = new Hero @heroclass
+		@hero = new Hero @, @heroclass
 
 		@hero.x = 128
 		@hero.y = 128
 		@hero.userControlled = true
 	
 		@entities.push @hero
-		@stage.addChild @hero.spr
 
 		for u in @userlist
 			@addUser u
@@ -71,12 +70,11 @@ class Game
 		new CmdUserLeft @user, @, @sio
 
 	addUser: (u) =>
-		h = new Hero u.heroclass
+		h = new Hero @, u.heroclass
 		h.x = u.x
 		h.y = u.y
 		@entities.push h
 		@users[u.id] = h
-		@stage.addChild h.spr
 
 	run: ->
 		@loop()

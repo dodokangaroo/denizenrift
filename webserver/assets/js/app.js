@@ -110,18 +110,7 @@
 }).call(this);
 
 
-},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],3:[function(require,module,exports){
-(function() {
-  window.requestAnimFrame = (function() {
-    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
-      return window.setTimeout(callback, 1000 / 60);
-    };
-  })();
-
-}).call(this);
-
-
-},{}],4:[function(require,module,exports){
+},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],4:[function(require,module,exports){
 (function() {
   var Input,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -325,6 +314,17 @@
 }).call(this);
 
 
+},{}],3:[function(require,module,exports){
+(function() {
+  window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
+      return window.setTimeout(callback, 1000 / 60);
+    };
+  })();
+
+}).call(this);
+
+
 },{}],2:[function(require,module,exports){
 (function() {
   var Game, stats,
@@ -397,12 +397,11 @@
       this.map = new GameMap(0);
       this.stage.addChild(this.map.spr);
       this.entities.push(this.map);
-      this.hero = new Hero(this.heroclass);
+      this.hero = new Hero(this, this.heroclass);
       this.hero.x = 128;
       this.hero.y = 128;
       this.hero.userControlled = true;
       this.entities.push(this.hero);
-      this.stage.addChild(this.hero.spr);
       _ref = this.userlist;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -422,12 +421,11 @@
     Game.prototype.addUser = function(u) {
       var h;
 
-      h = new Hero(u.heroclass);
+      h = new Hero(this, u.heroclass);
       h.x = u.x;
       h.y = u.y;
       this.entities.push(h);
-      this.users[u.id] = h;
-      return this.stage.addChild(h.spr);
+      return this.users[u.id] = h;
     };
 
     Game.prototype.run = function() {
@@ -462,36 +460,7 @@
 }).call(this);
 
 
-},{"./entities/gamemap.coffee":6,"./utils/input.coffee":4,"./entities/hero.coffee":7,"./cmds/mv.coffee":8,"./cmds/setclass.coffee":9,"./cmds/userjoin.coffee":10,"./cmds/userleft.coffee":11}],9:[function(require,module,exports){
-(function() {
-  var CmdSetClass;
-
-  CmdSetClass = (function() {
-    function CmdSetClass(user, game, sio) {
-      var _this = this;
-
-      this.user = user;
-      this.game = game;
-      this.sio = sio;
-      this.sio.on('setclass', function(id, heroclass) {
-        user = _this.game.users[id];
-        if (user == null) {
-          return;
-        }
-        return user.setClass(heroclass);
-      });
-    }
-
-    return CmdSetClass;
-
-  })();
-
-  window.CmdSetClass = CmdSetClass;
-
-}).call(this);
-
-
-},{}],8:[function(require,module,exports){
+},{"./entities/gamemap.coffee":6,"./entities/hero.coffee":7,"./utils/input.coffee":4,"./cmds/mv.coffee":8,"./cmds/userjoin.coffee":9,"./cmds/setclass.coffee":10,"./cmds/userleft.coffee":11}],8:[function(require,module,exports){
 (function() {
   var CmdMv;
 
@@ -522,6 +491,35 @@
 
 
 },{}],10:[function(require,module,exports){
+(function() {
+  var CmdSetClass;
+
+  CmdSetClass = (function() {
+    function CmdSetClass(user, game, sio) {
+      var _this = this;
+
+      this.user = user;
+      this.game = game;
+      this.sio = sio;
+      this.sio.on('setclass', function(id, heroclass) {
+        user = _this.game.users[id];
+        if (user == null) {
+          return;
+        }
+        return user.setClass(heroclass);
+      });
+    }
+
+    return CmdSetClass;
+
+  })();
+
+  window.CmdSetClass = CmdSetClass;
+
+}).call(this);
+
+
+},{}],9:[function(require,module,exports){
 (function() {
   var CmdUserJoin;
 
@@ -565,6 +563,7 @@
           return;
         }
         _this.game.entities.splice(_this.game.entities.indexOf(user), 1);
+        _this.game.stage.removeChild(user.spr);
         return delete _this.game.users[id];
       });
     }
@@ -627,18 +626,24 @@
 
     Hero.prototype.spr = null;
 
-    function Hero(heroclass) {
+    function Hero(game, heroclass) {
+      this.game = game;
       this.heroclass = heroclass;
       this.update = __bind(this.update, this);
       this.setClass = __bind(this.setClass, this);
-      this.spr = new PIXI.MovieClip([PIXI.Texture.fromFrame('Hero 0 0.png'), PIXI.Texture.fromFrame('Hero 0 1.png'), PIXI.Texture.fromFrame('Hero 0 2.png'), PIXI.Texture.fromFrame('Hero 0 3.png')]);
       this.setClass(this.heroclass);
     }
 
     Hero.prototype.setClass = function(heroclass) {
+      this.heroclass = heroclass;
       this.sx = Config.GraphicOffset.Classes[heroclass].x;
       this.sy = Config.GraphicOffset.Classes[heroclass].y;
-      return this.basex = Config.GraphicOffset.Classes[heroclass].x;
+      this.basex = Config.GraphicOffset.Classes[heroclass].x;
+      if (this.spr != null) {
+        this.game.stage.removeChild(this.spr);
+      }
+      this.spr = new PIXI.MovieClip([PIXI.Texture.fromFrame("Hero " + this.heroclass + " 0.png")]);
+      return this.game.stage.addChild(this.spr);
     };
 
     Hero.prototype.update = function() {

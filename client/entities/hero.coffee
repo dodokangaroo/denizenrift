@@ -9,20 +9,19 @@ class Hero
 
 	spr: null
 
-	constructor: (@heroclass) ->
-		@spr = new PIXI.MovieClip [
-			PIXI.Texture.fromFrame 'Hero 0 0.png'
-			PIXI.Texture.fromFrame 'Hero 0 1.png'
-			PIXI.Texture.fromFrame 'Hero 0 2.png'
-			PIXI.Texture.fromFrame 'Hero 0 3.png'
-		]
+	constructor: (@game, @heroclass) ->
 		@setClass @heroclass
 
-	setClass: (heroclass) =>
+	setClass: (@heroclass) =>
 		@sx = Config.GraphicOffset.Classes[heroclass].x
 		@sy = Config.GraphicOffset.Classes[heroclass].y
 
 		@basex = Config.GraphicOffset.Classes[heroclass].x
+
+		@game.stage.removeChild @spr if @spr?
+
+		@spr = new PIXI.MovieClip [PIXI.Texture.fromFrame "Hero #{@heroclass} 0.png"]
+		@game.stage.addChild @spr
 
 	update: =>
 
