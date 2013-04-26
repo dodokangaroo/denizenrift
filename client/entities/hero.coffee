@@ -1,6 +1,6 @@
-#= require ../graphics/sprite
+require '../data/config.coffee'
 
-class Hero extends Sprite
+class Hero
 
 	sw: 16
 	sh: 16
@@ -14,8 +14,10 @@ class Hero extends Sprite
 
 	userControlled: false
 
-	constructor: (bitmap, @heroclass) ->
-		super bitmap
+	spr: null
+
+	constructor: (@heroclass) ->
+		spr = new PIXI.Sprite PIXI.Texture.fromFrame 'Hero 0 1.png'
 		@setClass @heroclass
 
 	setClass: (heroclass) =>
@@ -30,10 +32,10 @@ class Hero extends Sprite
 			dx = 0
 			dy = 0
 
-			dy -= @speed if Input.keys[Key.W]
-			dy += @speed if Input.keys[Key.S]
-			dx -= @speed if Input.keys[Key.A]
-			dx += @speed if Input.keys[Key.D]
+			#dy -= @speed if Input.keys[Key.W]
+			#dy += @speed if Input.keys[Key.S]
+			#dx -= @speed if Input.keys[Key.A]
+			#dx += @speed if Input.keys[Key.D]
 
 			# Checking if the user goes outside boundaries
 			dx = 0 if @x + dx < 0	

@@ -1,10 +1,10 @@
 extends layout
 
 block append head
-	!= js('dr/dr')
+	!= js('app')
 
 block body
 	.dr
-		canvas.canvas
+		.canvas
 		include ui/login
 		include ui/selecthero

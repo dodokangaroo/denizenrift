@@ -1,6 +1,6 @@
-#= require ../graphics/sprite
+require '../data/config.coffee'
 
-class GameMap extends Sprite
+class GameMap
 
 	sw: 1024
 	sh: 640
@@ -10,9 +10,9 @@ class GameMap extends Sprite
 	sx: 0
 	sy: 0
 
-	constructor: (bitmap, @bmpentities, @id) ->
-		super bitmap
+	spr: new PIXI.Sprite PIXI.Texture.fromImage 'img/map.png'
 
+	constructor: (@id) ->
 		@data = Config.Maps[@id]
 		@name = @data.Name
 

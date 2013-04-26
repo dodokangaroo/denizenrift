@@ -1,32 +1,45 @@
-#= require_tree utils
-#= require_tree graphics
-#= require_tree entities
-#= require_tree data
-#= require_tree cmds
+require './entities/gamemap.coffee'
+require './entities/hero.coffee'
+require './utils/input.coffee'
 
-bmpentities = new Bitmap 'img/entities.png'
-bmpmap = new Bitmap 'img/map.png'
+require './cmds/mv.coffee'
+require './cmds/setclass.coffee'
+require './cmds/userjoin.coffee'
+require './cmds/userleft.coffee'
 
 class Game
 
 	entities: []
 	users: {}
+	spriteSheets: ['sprites/entities.json']
 
 	lastX: -1
 	lastY: -1
 
 	constructor: (@sio, @user, @heroclass, @userlist) ->
 
-		@container = $('.dr')
-		@canvas = $('.dr .canvas')[0]
+		canvas = $('.dr .canvas')
 
-		Input.addKeyboardListener $(document)
-		Input.addMouseListener @container
+		@stage = new PIXI.Stage
+		@renderer = PIXI.autoDetectRenderer 1024, 640
+			
+		canvas.append @renderer.view
 
-		@renderer = new Renderer @canvas
+		@setupCmds()
 
-		@map = new GameMap bmpmap, bmpentities, 0
-		@hero = new Hero bmpentities, @heroclass
+		loader = new PIXI.AssetLoader @spriteSheets
+		loader.onComplete = =>
+			@init()
+			@run()
+		loader.load()
+
+	init: ->
+
+		@map = new GameMap 0
+		@hero = new Hero @heroclass
+
+		@stage.addChild @map.spr
+		@stage.addChild @hero.spr
 
 		@hero.x = 128
 		@hero.y = 128
@@ -38,8 +51,6 @@ class Game
 		for u in @userlist
 			@addUser u
 
-		@setupCmds()
-
 	setupCmds: ->
 		new CmdMv @user, @, @sio
 		new CmdSetClass @user, @, @sio
@@ -47,11 +58,12 @@ class Game
 		new CmdUserLeft @user, @, @sio
 
 	addUser: (u) =>
-		h = new Hero bmpentities, u.heroclass
+		h = new Hero txEntity, u.heroclass
 		h.x = u.x
 		h.y = u.y
 		@entities.push h
 		@users[u.id] = h
+		@stage.addChild @h.spr
 
 	run: ->
 		@loop()
@@ -59,11 +71,8 @@ class Game
 	loop: =>
 		requestAnimFrame @loop
 
-		@renderer.clear()
-
 		for e in @entities
 			e.update()
-			e.draw @renderer.ctx
 
 		if lastX != @hero.x or lastY != @hero.y
 
@@ -71,5 +80,7 @@ class Game
 			lastY = @hero.y
 
 			@sio.emit 'mv', @hero.x, @hero.y
+
+		@renderer.render @stage
 
 window.Game = Game

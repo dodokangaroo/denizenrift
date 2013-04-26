@@ -1,4 +1,7 @@
-#= require game
+require './game.coffee'
+require './utils/utils.coffee'
+require './utils/input.coffee'
+require './data/config.coffee'
 
 sio = null
 game = null
@@ -11,7 +14,6 @@ $().ready ->
 			sio.emit 'setclass', heroclass
 
 			game = new Game sio, user, heroclass, userlist
-			game.run()
 
 		sio.on 'userlist', (users) =>
 			userlist = users

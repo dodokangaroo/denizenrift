@@ -1,0 +1,47 @@
+{
+	"frames":
+	{
+
+		"Hero 0 0.png":
+		{
+			"frame": {"x":128,"y":464,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Hero 0 1.png":
+		{
+			"frame": {"x":144,"y":464,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Hero 0 2.png":
+		{
+			"frame": {"x":160,"y":464,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Hero 0 3.png":
+		{
+			"frame": {"x":176,"y":464,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		}
+	},
+	"meta": {
+			"app": "http://www.texturepacker.com",
+			"version": "1.0",
+			"image": "../img/entities.png",
+			"format": "RGBA8888",
+			"size": {"w":256,"h":496},
+			"scale": "1",
+			"smartupdate": "$TexturePacker:SmartUpdate:17e4a2d92ff3e27832c3f4938cec7c85$"
+	}
+}
