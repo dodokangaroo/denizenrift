@@ -55,8 +55,8 @@ class Hero
 			@spr.gotoAndStop 1 if dy > 0
 			
 
-			@spr.position.x = @x | 0
-			@spr.position.y = @y | 0
+		@spr.position.x = @x | 0
+		@spr.position.y = @y | 0
 
 
 window.Hero = Hero

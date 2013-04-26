@@ -71,12 +71,12 @@ class Game
 		new CmdUserLeft @user, @, @sio
 
 	addUser: (u) =>
-		h = new Hero txEntity, u.heroclass
+		h = new Hero u.heroclass
 		h.x = u.x
 		h.y = u.y
 		@entities.push h
 		@users[u.id] = h
-		@stage.addChild @h.spr
+		@stage.addChild h.spr
 
 	run: ->
 		@loop()
