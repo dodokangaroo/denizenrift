@@ -17,14 +17,14 @@ execute this as a bat file on Windows.
 ## Running
 
 Linux:
-	sudo ./run.sh
+	> sudo ./run.sh
 
 Windows:
 	
 	Open two terminals and run:
 
-	* wr -v --exec "browserify -t coffeeify ./client/app.coffee > ./webserver/assets/js/app.js" client &
-	* coffee webserver/app.coffee
+	> wr -v --exec "browserify -t coffeeify ./client/app.coffee > ./webserver/assets/js/app.js" client &
+	> coffee webserver/app.coffee
 
 ## Structure
 

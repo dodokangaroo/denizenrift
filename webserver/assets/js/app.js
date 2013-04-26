@@ -18,7 +18,6 @@
   userlist = [];
 
   $().ready(function() {
-    alert('tes3');
     return login(function(user) {
       var _this = this;
 
@@ -111,66 +110,7 @@
 }).call(this);
 
 
-},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],5:[function(require,module,exports){
-(function() {
-  window.Config = {
-    Classes: {
-      0: {
-        Name: "Mage",
-        Description: "I'm a mage!",
-        Health: 200,
-        Attacks: [0]
-      },
-      1: {
-        Name: "Squire",
-        Description: "I'm a squire!",
-        Health: 300,
-        Attacks: []
-      },
-      2: {
-        Name: "Monk",
-        Description: "I'm a monk!",
-        Health: 250,
-        Attacks: []
-      },
-      3: {
-        Name: "Hunter",
-        Description: "I'm a hunter!",
-        Health: 250,
-        Attacks: []
-      }
-    },
-    GraphicOffset: {
-      Classes: {
-        0: {
-          x: 128,
-          y: 464
-        },
-        1: {
-          x: 64,
-          y: 464
-        },
-        2: {
-          x: 128,
-          y: 480
-        },
-        3: {
-          x: 0,
-          y: 464
-        }
-      }
-    },
-    Maps: {
-      0: {
-        Name: "Cake Land"
-      }
-    }
-  };
-
-}).call(this);
-
-
-},{}],3:[function(require,module,exports){
+},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],3:[function(require,module,exports){
 (function() {
   window.requestAnimFrame = (function() {
     return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
@@ -328,7 +268,7 @@
 
 },{}],2:[function(require,module,exports){
 (function() {
-  var Game,
+  var Game, stats,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   require('./entities/gamemap.coffee');
@@ -344,6 +284,16 @@
   require('./cmds/userjoin.coffee');
 
   require('./cmds/userleft.coffee');
+
+  stats = new Stats();
+
+  stats.setMode(0);
+
+  stats.domElement.style.position = 'absolute';
+
+  stats.domElement.style.left = '0px';
+
+  stats.domElement.style.top = '0px';
 
   Game = (function() {
     Game.prototype.entities = [];
@@ -370,6 +320,9 @@
       this.stage = new PIXI.Stage;
       this.renderer = PIXI.autoDetectRenderer(1024, 640);
       canvas.append(this.renderer.view);
+      canvas.append(stats.domElement);
+      Input.addKeyboardListener($(document));
+      Input.addMouseListener(canvas);
       this.setupCmds();
       loader = new PIXI.AssetLoader(this.spriteSheets);
       loader.onComplete = function() {
@@ -383,14 +336,14 @@
       var u, _i, _len, _ref, _results;
 
       this.map = new GameMap(0);
-      this.hero = new Hero(this.heroclass);
       this.stage.addChild(this.map.spr);
-      this.stage.addChild(this.hero.spr);
+      this.entities.push(this.map);
+      this.hero = new Hero(this.heroclass);
       this.hero.x = 128;
       this.hero.y = 128;
       this.hero.userControlled = true;
-      this.entities.push(this.map);
       this.entities.push(this.hero);
+      this.stage.addChild(this.hero.spr);
       _ref = this.userlist;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -425,6 +378,7 @@
     Game.prototype.loop = function() {
       var e, lastX, lastY, _i, _len, _ref;
 
+      stats.begin();
       requestAnimFrame(this.loop);
       _ref = this.entities;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -436,7 +390,8 @@
         lastY = this.hero.y;
         this.sio.emit('mv', this.hero.x, this.hero.y);
       }
-      return this.renderer.render(this.stage);
+      this.renderer.render(this.stage);
+      return stats.end();
     };
 
     return Game;
@@ -448,7 +403,66 @@
 }).call(this);
 
 
-},{"./entities/gamemap.coffee":6,"./utils/input.coffee":4,"./entities/hero.coffee":7,"./cmds/mv.coffee":8,"./cmds/setclass.coffee":9,"./cmds/userjoin.coffee":10,"./cmds/userleft.coffee":11}],8:[function(require,module,exports){
+},{"./entities/gamemap.coffee":6,"./entities/hero.coffee":7,"./utils/input.coffee":4,"./cmds/mv.coffee":8,"./cmds/setclass.coffee":9,"./cmds/userjoin.coffee":10,"./cmds/userleft.coffee":11}],5:[function(require,module,exports){
+(function() {
+  window.Config = {
+    Classes: {
+      0: {
+        Name: "Mage",
+        Description: "I'm a mage!",
+        Health: 200,
+        Attacks: [0]
+      },
+      1: {
+        Name: "Squire",
+        Description: "I'm a squire!",
+        Health: 300,
+        Attacks: []
+      },
+      2: {
+        Name: "Monk",
+        Description: "I'm a monk!",
+        Health: 250,
+        Attacks: []
+      },
+      3: {
+        Name: "Hunter",
+        Description: "I'm a hunter!",
+        Health: 250,
+        Attacks: []
+      }
+    },
+    GraphicOffset: {
+      Classes: {
+        0: {
+          x: 128,
+          y: 464
+        },
+        1: {
+          x: 64,
+          y: 464
+        },
+        2: {
+          x: 128,
+          y: 480
+        },
+        3: {
+          x: 0,
+          y: 464
+        }
+      }
+    },
+    Maps: {
+      0: {
+        Name: "Cake Land"
+      }
+    }
+  };
+
+}).call(this);
+
+
+},{}],8:[function(require,module,exports){
 (function() {
   var CmdMv;
 
@@ -507,6 +521,31 @@
 }).call(this);
 
 
+},{}],10:[function(require,module,exports){
+(function() {
+  var CmdUserJoin;
+
+  CmdUserJoin = (function() {
+    function CmdUserJoin(user, game, sio) {
+      var _this = this;
+
+      this.user = user;
+      this.game = game;
+      this.sio = sio;
+      this.sio.on('userjoin', function(u) {
+        return _this.game.addUser(u);
+      });
+    }
+
+    return CmdUserJoin;
+
+  })();
+
+  window.CmdUserJoin = CmdUserJoin;
+
+}).call(this);
+
+
 },{}],11:[function(require,module,exports){
 (function() {
   var CmdUserLeft;
@@ -537,91 +576,16 @@
 }).call(this);
 
 
-},{}],10:[function(require,module,exports){
-(function() {
-  var CmdUserJoin;
-
-  CmdUserJoin = (function() {
-    function CmdUserJoin(user, game, sio) {
-      var _this = this;
-
-      this.user = user;
-      this.game = game;
-      this.sio = sio;
-      this.sio.on('userjoin', function(u) {
-        return _this.game.addUser(u);
-      });
-    }
-
-    return CmdUserJoin;
-
-  })();
-
-  window.CmdUserJoin = CmdUserJoin;
-
-}).call(this);
-
-
-},{}],6:[function(require,module,exports){
-(function() {
-  var GameMap,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-  require('../data/config.coffee');
-
-  GameMap = (function() {
-    GameMap.prototype.sw = 1024;
-
-    GameMap.prototype.sh = 640;
-
-    GameMap.prototype.dw = 1024;
-
-    GameMap.prototype.dh = 640;
-
-    GameMap.prototype.sx = 0;
-
-    GameMap.prototype.sy = 0;
-
-    GameMap.prototype.spr = new PIXI.Sprite(PIXI.Texture.fromImage('img/map.png'));
-
-    function GameMap(id) {
-      this.id = id;
-      this.update = __bind(this.update, this);
-      this.data = Config.Maps[this.id];
-      this.name = this.data.Name;
-    }
-
-    GameMap.prototype.update = function() {};
-
-    return GameMap;
-
-  })();
-
-  window.GameMap = GameMap;
-
-}).call(this);
-
-
-},{"../data/config.coffee":5}],7:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function() {
   var Hero,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   require('../data/config.coffee');
 
+  require('../utils/input.coffee');
+
   Hero = (function() {
-    Hero.prototype.sw = 16;
-
-    Hero.prototype.sh = 16;
-
-    Hero.prototype.dw = 16;
-
-    Hero.prototype.dh = 16;
-
-    Hero.prototype.sx = 0;
-
-    Hero.prototype.sy = 0;
-
     Hero.prototype.speed = 2;
 
     Hero.prototype.userControlled = false;
@@ -629,12 +593,10 @@
     Hero.prototype.spr = null;
 
     function Hero(heroclass) {
-      var spr;
-
       this.heroclass = heroclass;
       this.update = __bind(this.update, this);
       this.setClass = __bind(this.setClass, this);
-      spr = new PIXI.Sprite(PIXI.Texture.fromFrame('Hero 0 1.png'));
+      this.spr = new PIXI.MovieClip([PIXI.Texture.fromFrame('Hero 0 0.png'), PIXI.Texture.fromFrame('Hero 0 1.png'), PIXI.Texture.fromFrame('Hero 0 2.png'), PIXI.Texture.fromFrame('Hero 0 3.png')]);
       this.setClass(this.heroclass);
     }
 
@@ -650,6 +612,18 @@
       if (this.userControlled) {
         dx = 0;
         dy = 0;
+        if (Input.keys[Key.W]) {
+          dy -= this.speed;
+        }
+        if (Input.keys[Key.S]) {
+          dy += this.speed;
+        }
+        if (Input.keys[Key.A]) {
+          dx -= this.speed;
+        }
+        if (Input.keys[Key.D]) {
+          dx += this.speed;
+        }
         if (this.x + dx < 0) {
           dx = 0;
         }
@@ -669,28 +643,20 @@
         this.x += dx;
         this.y += dy;
         if (dx < 0) {
-          this.sx = this.basex + 32;
+          this.spr.gotoAndStop(2);
         }
         if (dx > 0) {
-          this.sx = this.basex + 0;
+          this.spr.gotoAndStop(0);
         }
         if (dy < 0) {
-          this.sx = this.basex + 48;
+          this.spr.gotoAndStop(3);
         }
         if (dy > 0) {
-          return this.sx = this.basex + 16;
+          this.spr.gotoAndStop(1);
         }
+        this.spr.position.x = this.x | 0;
+        return this.spr.position.y = this.y | 0;
       }
-    };
-
-    Hero.prototype.draw = function(ctx, x, y) {
-      if (x == null) {
-        x = this.x;
-      }
-      if (y == null) {
-        y = this.y;
-      }
-      return Hero.__super__.draw.call(this, ctx, x | 0, y | 0);
     };
 
     return Hero;
@@ -698,6 +664,39 @@
   })();
 
   window.Hero = Hero;
+
+}).call(this);
+
+
+},{"../data/config.coffee":5,"../utils/input.coffee":4}],6:[function(require,module,exports){
+(function() {
+  var GameMap,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  require('../data/config.coffee');
+
+  GameMap = (function() {
+    GameMap.prototype.w = 1024;
+
+    GameMap.prototype.h = 640;
+
+    GameMap.prototype.spr = null;
+
+    function GameMap(id) {
+      this.id = id;
+      this.update = __bind(this.update, this);
+      this.spr = new PIXI.Sprite(PIXI.Texture.fromImage('img/map.png'));
+      this.data = Config.Maps[this.id];
+      this.name = this.data.Name;
+    }
+
+    GameMap.prototype.update = function() {};
+
+    return GameMap;
+
+  })();
+
+  window.GameMap = GameMap;
 
 }).call(this);
 

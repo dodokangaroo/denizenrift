@@ -7,6 +7,14 @@ require './cmds/setclass.coffee'
 require './cmds/userjoin.coffee'
 require './cmds/userleft.coffee'
 
+stats = new Stats()
+stats.setMode 0
+
+stats.domElement.style.position = 'absolute'
+stats.domElement.style.left = '0px'
+stats.domElement.style.top = '0px'
+
+
 class Game
 
 	entities: []
@@ -24,6 +32,10 @@ class Game
 		@renderer = PIXI.autoDetectRenderer 1024, 640
 			
 		canvas.append @renderer.view
+		canvas.append stats.domElement
+
+		Input.addKeyboardListener $(document)
+		Input.addMouseListener canvas
 
 		@setupCmds()
 
@@ -36,17 +48,18 @@ class Game
 	init: ->
 
 		@map = new GameMap 0
-		@hero = new Hero @heroclass
 
 		@stage.addChild @map.spr
-		@stage.addChild @hero.spr
+		@entities.push @map
+
+		@hero = new Hero @heroclass
 
 		@hero.x = 128
 		@hero.y = 128
 		@hero.userControlled = true
-
-		@entities.push @map
+	
 		@entities.push @hero
+		@stage.addChild @hero.spr
 
 		for u in @userlist
 			@addUser u
@@ -69,6 +82,8 @@ class Game
 		@loop()
 
 	loop: =>
+		stats.begin()
+
 		requestAnimFrame @loop
 
 		for e in @entities
@@ -82,5 +97,7 @@ class Game
 			@sio.emit 'mv', @hero.x, @hero.y
 
 		@renderer.render @stage
+
+		stats.end()
 
 window.Game = Game
