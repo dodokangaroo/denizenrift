@@ -3,6 +3,7 @@ require './entities/hero.coffee'
 require './utils/input.coffee'
 
 require './cmds/mv.coffee'
+require './cmds/chat.coffee'
 require './cmds/setclass.coffee'
 require './cmds/userjoin.coffee'
 require './cmds/userleft.coffee'
@@ -65,6 +66,7 @@ class Game
 
 	setupCmds: ->
 		new CmdMv @user, @, @sio
+		new CmdChat @user, @, @sio
 		new CmdSetClass @user, @, @sio
 		new CmdUserJoin @user, @, @sio
 		new CmdUserLeft @user, @, @sio
@@ -93,6 +95,7 @@ class Game
 			lastY = @hero.y
 
 			@sio.emit 'mv', @hero.x, @hero.y
+			@sio.emit 'chatAll', "Some random message"
 
 		@renderer.render @stage
 
