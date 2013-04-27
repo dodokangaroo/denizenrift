@@ -95,7 +95,8 @@ class Game
 			lastY = @hero.y
 
 			@sio.emit 'mv', @hero.x, @hero.y
-			@sio.emit 'chatAll', "Some random message"
+		
+		@sio.emit 'chat', "Some random message"
 
 		@renderer.render @stage
 

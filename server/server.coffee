@@ -9,6 +9,7 @@ class Server
 	#all cmds client sends to server
 	cmds: [
 		require('./cmds/mv'),
+		require('./cmds/chat'),
 		require('./cmds/setclass')
 	]
 
