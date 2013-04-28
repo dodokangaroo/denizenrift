@@ -6,21 +6,33 @@ window.Config =
 			Description: "I'm a mage!"
 			Health: 200
 			Attacks: [0]
+			Str: 5
+			Int: 15
+			Agi: 5
 		1:
 			Name: "Squire"
 			Description: "I'm a squire!"
 			Health: 300
 			Attacks: []
+			Str: 13
+			Int: 7
+			Agi: 5
 		2:
 			Name: "Monk"
 			Description: "I'm a monk!"
 			Health: 250
 			Attacks: []
+			Str: 10
+			Int: 7
+			Agi: 8
 		3:
 			Name: "Hunter"
 			Description: "I'm a hunter!"
 			Health: 250
 			Attacks: []
+			Str: 5
+			Int: 5
+			Agi: 15
 
 	GraphicOffset:
 		Classes:
