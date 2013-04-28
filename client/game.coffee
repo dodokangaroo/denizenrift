@@ -20,7 +20,7 @@ class Game
 
 	entities: []
 	users: {}
-	spriteSheets: ['sprites/entities.json']
+	spriteSheets: ['sprites/entities.json', '/sprites/objects.json']
 
 	lastX: -1
 	lastY: -1
@@ -32,7 +32,8 @@ class Game
 		# show chat
 		$('.chatbox').removeClass 'invisible'
 
-		@stage = new PIXI.Stage
+		# create an interactive pixi stage
+		@stage = new PIXI.Stage 0x202020, true
 		@renderer = PIXI.autoDetectRenderer 1024, 640
 			
 		canvas.append @renderer.view
@@ -56,11 +57,13 @@ class Game
 		@stage.addChild @map.spr
 		@entities.push @map
 
-		@hero = new Hero @, @heroclass
+		# create our hero
+		@hero = new Hero @, @heroclass, true
 
 		@hero.x = 128
 		@hero.y = 128
-		@hero.userControlled = true
+
+		@stage.addChild @hero.sprContainer
 	
 		@entities.push @hero
 
@@ -81,6 +84,7 @@ class Game
 		h.data = u
 		@entities.push h
 		@users[u.id] = h
+		@stage.addChild h.sprContainer
 
 	run: ->
 		@loop()

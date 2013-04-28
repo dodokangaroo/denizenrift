@@ -11,16 +11,28 @@ class Hero
 	# sprite
 	spr: null
 
+	# sprite container
+	sprContainer: null
+
 	# player info
 	data: null
 
-	constructor: (@game, @heroclass) ->
+	# hovering img
+	#hoverSpr: null
+
+	constructor: (@game, @heroclass, @userControlled = false) ->
+		
+		@sprContainer = new PIXI.DisplayObjectContainer
+
+		# allow hover on other players
+		@allowHover() if !@userControlled
+
 		@setClass @heroclass
 
 	setClass: (@heroclass) =>
 
 		# remove old graphic
-		@game.stage.removeChild @spr if @spr?
+		@sprContainer.removeChild @spr if @spr?
 
 		#get new graphic
 		@spr = new PIXI.MovieClip [
@@ -31,7 +43,7 @@ class Hero
 		]
 
 		# add graphic
-		@game.stage.addChild @spr
+		@sprContainer.addChild @spr
 
 	update: =>
 
@@ -66,8 +78,44 @@ class Hero
 			@spr.gotoAndStop 1 if dy > 0
 			
 
-		@spr.position.x = @x | 0
-		@spr.position.y = @y | 0
+		@sprContainer.position.x = @x | 0
+		@sprContainer.position.y = @y | 0
+
+	allowHover: ->
+		###
+		@hoverSpr = new PIXI.MovieClip [
+			PIXI.Texture.fromFrame "Hover 0.png"
+			PIXI.Texture.fromFrame "Hover 1.png"
+		]
+
+		@sprContainer.addChild @hoverSpr
+		@hoverSpr.visible = false
+
+		@hoverSpr.position.y = 8
+		###
+
+		@sprContainer.setInteractive true
+		@sprContainer.mouseover = @onMouseOver
+		@sprContainer.mouseout = @onMouseOut
+		@sprContainer.hitArea = new PIXI.Rectangle 0, 0, 16, 16
+
+		#@hoverSpr.animationSpeed = 0.05
+
+	onMouseOver: =>
+		###
+		@hoverSpr.visible = true
+		@hoverSpr.play()
+		###
+
+		$('.dr').addClass 'cursorkill'
+
+	onMouseOut: =>
+		###
+		@hoverSpr.visible = false
+		@hoverSpr.stop()
+		###
+
+		$('.dr').removeClass 'cursorkill'
 
 
 window.Hero = Hero
