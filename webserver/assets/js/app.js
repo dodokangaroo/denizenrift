@@ -110,7 +110,77 @@
 }).call(this);
 
 
-},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],4:[function(require,module,exports){
+},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],3:[function(require,module,exports){
+(function() {
+  window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
+      return window.setTimeout(callback, 1000 / 60);
+    };
+  })();
+
+}).call(this);
+
+
+},{}],5:[function(require,module,exports){
+(function() {
+  window.Config = {
+    Classes: {
+      0: {
+        Name: "Mage",
+        Description: "I'm a mage!",
+        Health: 200,
+        Attacks: [0]
+      },
+      1: {
+        Name: "Squire",
+        Description: "I'm a squire!",
+        Health: 300,
+        Attacks: []
+      },
+      2: {
+        Name: "Monk",
+        Description: "I'm a monk!",
+        Health: 250,
+        Attacks: []
+      },
+      3: {
+        Name: "Hunter",
+        Description: "I'm a hunter!",
+        Health: 250,
+        Attacks: []
+      }
+    },
+    GraphicOffset: {
+      Classes: {
+        0: {
+          x: 128,
+          y: 464
+        },
+        1: {
+          x: 64,
+          y: 464
+        },
+        2: {
+          x: 128,
+          y: 480
+        },
+        3: {
+          x: 0,
+          y: 464
+        }
+      }
+    },
+    Maps: {
+      0: {
+        Name: "Cake Land"
+      }
+    }
+  };
+
+}).call(this);
+
+
+},{}],4:[function(require,module,exports){
 (function() {
   var Input,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -255,76 +325,6 @@
 }).call(this);
 
 
-},{}],5:[function(require,module,exports){
-(function() {
-  window.Config = {
-    Classes: {
-      0: {
-        Name: "Mage",
-        Description: "I'm a mage!",
-        Health: 200,
-        Attacks: [0]
-      },
-      1: {
-        Name: "Squire",
-        Description: "I'm a squire!",
-        Health: 300,
-        Attacks: []
-      },
-      2: {
-        Name: "Monk",
-        Description: "I'm a monk!",
-        Health: 250,
-        Attacks: []
-      },
-      3: {
-        Name: "Hunter",
-        Description: "I'm a hunter!",
-        Health: 250,
-        Attacks: []
-      }
-    },
-    GraphicOffset: {
-      Classes: {
-        0: {
-          x: 128,
-          y: 464
-        },
-        1: {
-          x: 64,
-          y: 464
-        },
-        2: {
-          x: 128,
-          y: 480
-        },
-        3: {
-          x: 0,
-          y: 464
-        }
-      }
-    },
-    Maps: {
-      0: {
-        Name: "Cake Land"
-      }
-    }
-  };
-
-}).call(this);
-
-
-},{}],3:[function(require,module,exports){
-(function() {
-  window.requestAnimFrame = (function() {
-    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
-      return window.setTimeout(callback, 1000 / 60);
-    };
-  })();
-
-}).call(this);
-
-
 },{}],2:[function(require,module,exports){
 (function() {
   var Game, stats,
@@ -460,7 +460,7 @@
 }).call(this);
 
 
-},{"./entities/gamemap.coffee":6,"./entities/hero.coffee":7,"./utils/input.coffee":4,"./cmds/mv.coffee":8,"./cmds/userjoin.coffee":9,"./cmds/setclass.coffee":10,"./cmds/userleft.coffee":11}],8:[function(require,module,exports){
+},{"./entities/gamemap.coffee":6,"./entities/hero.coffee":7,"./utils/input.coffee":4,"./cmds/mv.coffee":8,"./cmds/setclass.coffee":9,"./cmds/userjoin.coffee":10,"./cmds/userleft.coffee":11}],8:[function(require,module,exports){
 (function() {
   var CmdMv;
 
@@ -492,6 +492,32 @@
 
 },{}],10:[function(require,module,exports){
 (function() {
+  var CmdUserJoin;
+
+  CmdUserJoin = (function() {
+    function CmdUserJoin(user, game, sio) {
+      var _this = this;
+
+      this.user = user;
+      this.game = game;
+      this.sio = sio;
+      this.sio.on('userjoin', function(u) {
+        console.log("user " + u.id + " joined");
+        return _this.game.addUser(u);
+      });
+    }
+
+    return CmdUserJoin;
+
+  })();
+
+  window.CmdUserJoin = CmdUserJoin;
+
+}).call(this);
+
+
+},{}],9:[function(require,module,exports){
+(function() {
   var CmdSetClass;
 
   CmdSetClass = (function() {
@@ -515,32 +541,6 @@
   })();
 
   window.CmdSetClass = CmdSetClass;
-
-}).call(this);
-
-
-},{}],9:[function(require,module,exports){
-(function() {
-  var CmdUserJoin;
-
-  CmdUserJoin = (function() {
-    function CmdUserJoin(user, game, sio) {
-      var _this = this;
-
-      this.user = user;
-      this.game = game;
-      this.sio = sio;
-      this.sio.on('userjoin', function(u) {
-        console.log("user " + u.id + " joined");
-        return _this.game.addUser(u);
-      });
-    }
-
-    return CmdUserJoin;
-
-  })();
-
-  window.CmdUserJoin = CmdUserJoin;
 
 }).call(this);
 
@@ -708,5 +708,5 @@
 }).call(this);
 
 
-},{"../data/config.coffee":5,"../utils/input.coffee":4}]},{},[1])
+},{"../utils/input.coffee":4,"../data/config.coffee":5}]},{},[1])
 ;
