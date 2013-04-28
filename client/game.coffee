@@ -104,4 +104,12 @@ class Game
 
 		stats.end()
 
+		if Input.keysPressed[Key.ENTER]
+			txt = $('.chatin').val()		  		#  get the text
+			$('.chatin').val '' 					# clear the txt in
+			$('.chatout').append "<li>Me: #{txt}</li>" 	# output the text
+			@sio.emit 'chat', txt
+
+		Input.update()
+
 window.Game = Game
