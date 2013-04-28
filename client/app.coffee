@@ -26,8 +26,17 @@ login = (fn) =>
 	#show spinner while sio.io connects
 	$('.login').removeClass 'invisible'
 
+	console.log 'Connecting'
+
 	sio = io.connect()
-	sio.on 'connect', onLogin fn
+	sio.on 'connect', =>
+		console.log 'Connected'
+		onLogin fn
+
+	sio.on 'disconnect', ->
+		sio.socket.reconnect()
+		console.log 'Disconnected'
+
 
 onLogin = (fn) =>
 
@@ -65,9 +74,11 @@ onLogin = (fn) =>
 
 			$('.txtpassword').val ''
 
+			console.log 'Logging in'
 			sio.emit 'login', user, pass, (res) =>
 				
 				if res.success
+					console.log 'Login success'
 					$('.login').addClass 'invisible'
 
 					$(document).unbind 'keydown'
@@ -75,6 +86,7 @@ onLogin = (fn) =>
 
 					fn res.user
 				else
+					console.log 'Login failed'
 					$('.input').removeClass 'invisible'
 					$('.spinner').addClass 'invisible'
 					$('.txtstatus').html 'Authentication failed'

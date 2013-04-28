@@ -9,14 +9,19 @@ class Server
 	#all cmds client sends to server
 	cmds: [
 		require('./cmds/mv'),
+		require('./cmds/chat'),
 		require('./cmds/setclass')
 	]
 
 	constructor: (@express, @io) ->
 
+		console.log 'Server started'
+
 		@io.on 'connection', (socket) =>
 
 			id = @uniqueID++
+
+			console.log "User #{id} joined."
 
 			socket.on 'register', (name, pass, fn) =>
 				@register socket, name, pass, fn
@@ -25,13 +30,13 @@ class Server
 				user = @login socket, id, name, pass, fn
 
 				if user?
-
 					for cmd in @cmds
 						new cmd user, @
 
 			socket.on 'disconnect', =>
 				socket.broadcast.emit 'userleft', id
 				delete @users[id] if @users[id]?
+				console.log "User #{id} left."
 
 			socket.express = @
 

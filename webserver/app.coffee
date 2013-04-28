@@ -27,9 +27,13 @@ server = app.listen 80, =>
 
 io = sio.listen server
 io.set 'log level', 1 #disable logging
-io.set 'close timeout', 10
+io.set 'close timeout', 360
+io.set 'heartbeat timeout', 10
+io.set 'heartbeat interval', 5
 
 app.get '/', require("#{__dirname}/routes/index")
+
+console.log 'Starting Denizen Rift Server'
 
 Server = require '../server/server'
 new Server server, io
