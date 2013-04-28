@@ -29,6 +29,9 @@ class Input
 		@keysPressed.length = 0
 		@keysReleased.length = 0
 
+	hasFocus: ->
+		return !$('.chatin').is ':focus'
+
 window.Input = new Input
 
 window.Key = 

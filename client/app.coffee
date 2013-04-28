@@ -9,6 +9,12 @@ userlist = []
 
 $().ready ->
 
+	# disable dragging the page
+	$('.canvas')[0].draggable = false
+	$('.canvas')[0].onmousedown = (e) ->
+		e.preventDefault()
+		return false
+
 	login (user) ->
 		selectHero user, (heroclass) ->
 			sio.emit 'setclass', heroclass

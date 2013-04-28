@@ -5,7 +5,6 @@ class CmdChat
 		@sio.on 'chat', (id, message) =>
 			user = @game.users[id]
 			return if !user? #error user doesnt exist
-			$('.chatout').append "<li>#{user.data.name}: #{message}</li>"
-			$('.chatout').animate scrollTop: $('.chatout').prop 'scrollHeight', 200
+			game.printChat "<div>#{user.data.name}: #{message}</div>"
 
 window.CmdChat = CmdChat

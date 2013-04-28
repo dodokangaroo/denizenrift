@@ -88,11 +88,21 @@ class Game
 	loop: =>
 		stats.begin()
 
+		# ask for loop to be run again asap (max 60fps)
 		requestAnimFrame @loop
 
 		for e in @entities
 			e.update()
 
+		@doMovement()
+		@doChat()
+
+		# let pixijs render
+		@renderer.render @stage
+
+		stats.end()
+
+	doMovement: ->
 		if lastX != @hero.x or lastY != @hero.y
 
 			lastX = @hero.x
@@ -100,18 +110,16 @@ class Game
 
 			@sio.emit 'mv', @hero.x, @hero.y
 
-		@renderer.render @stage
-
-		stats.end()
-
+	doChat: ->
 		# if user press enter 
 		if Input.keysPressed[Key.ENTER]
 			txt = $('.chatin').val()
 			# if there is text and the chat was selected, send the message
-			if txt.length > 0 && $('.chatin').focus()
+			if txt.length > 0 && $('.chatin').is(':focus')
 				$('.chatin').val '' 								
-				$('.chatout').append "<li>#{@user.name}: #{txt}</li>" 	
+				@printChat "<div>#{@user.name}: #{txt}</div>" 	
 				@sio.emit 'chat', txt
+				$('.chatin').blur()
 			# else select the chat
 			else
 				$('.chatin').focus()
@@ -120,5 +128,10 @@ class Game
 			$('.chatin').blur()
 
 		Input.update()
+
+	printChat: (msg) ->
+		out = $('.chatout') 
+		out.append  msg
+		out.animate scrollTop: out[0].scrollHeight, 200
 
 window.Game = Game

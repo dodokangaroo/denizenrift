@@ -159,33 +159,32 @@ body
 .herobox:hover > .portrait.hero3
 	background-position: -96px 32px
 
+cwidth = 250
+
 .chatbox
 	height: 216px
-	width: 200px
+	width: cwidth px
 	position: absolute
-	bottom: 12px
+	bottom: 0px
 	left: 0px
 
 .chatout
 	background-color: rgba(0, 0, 0, 25%)
-	display: block
-	width: 192px
 	height: 193px
 	z-index: 1000
 
 .chatin
-	width: 192px
 	height: 16px
 	border: none
 	background-color: rgba(0, 0, 0, 50%)
 
 .chatin, .chatout
+	width: (cwidth - 8) px
 	font-size: 12px
 	color: #DDD
 	padding-left: 4px
 	padding-right: 4px
 	padding-top: 3px
-	margin-bottom: 0px
 	font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace
 	overflow: hidden
 
