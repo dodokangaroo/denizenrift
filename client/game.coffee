@@ -106,9 +106,12 @@ class Game
 
 		if Input.keysPressed[Key.ENTER]
 			txt = $('.chatin').val()		  						#  get the text
-			$('.chatin').val '' 									# clear the txt in
-			$('.chatout').append "<li>#{@user.name}: #{txt}</li>" 	# output the text
-			@sio.emit 'chat', txt
+			if txt.length > 0
+				$('.chatin').val '' 									# clear the txt in
+				$('.chatout').append "<li>#{@user.name}: #{txt}</li>" 	# output the text
+				@sio.emit 'chat', txt
+			else
+				$('.chatin').focus()
 
 		Input.update()
 
