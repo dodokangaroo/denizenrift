@@ -104,14 +104,20 @@ class Game
 
 		stats.end()
 
+		# if user press enter 
 		if Input.keysPressed[Key.ENTER]
-			txt = $('.chatin').val()		  						#  get the text
-			if txt.length > 0
-				$('.chatin').val '' 									# clear the txt in
-				$('.chatout').append "<li>#{@user.name}: #{txt}</li>" 	# output the text
+			txt = $('.chatin').val()
+			# if there is text and the chat was selected, send the message
+			if txt.length > 0 && $('.chatin').focus()
+				$('.chatin').val '' 								
+				$('.chatout').append "<li>#{@user.name}: #{txt}</li>" 	
 				@sio.emit 'chat', txt
+			# else select the chat
 			else
 				$('.chatin').focus()
+		# if the user press ESC while the chat box is focused, remove focus from it
+		else if Input.keysPressed[Key.ESCAPE] && $('.chatin').is(':focus')
+			$('.chatin').blur()
 
 		Input.update()
 
