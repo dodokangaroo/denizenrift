@@ -1,6 +1,8 @@
 class Input
 
 	keys: []
+	keysPressed: []
+	keysReleased: []
 
 	mouseX: 0
 	mouseY: 0
@@ -9,8 +11,10 @@ class Input
 	addKeyboardListener: (div) =>
 		div.keydown (e) =>
 			@keys[e.which] = true
+			@keysPressed[e.which] = true
 		div.keyup (e) =>
 			@keys[e.which] = false
+			@keysReleased[e.which] = false
 
 	addMouseListener: (div) =>
 		div.mousemove (e) =>
@@ -20,6 +24,10 @@ class Input
 			@mouseDown = true
 		div.mouseup (e) =>
 			@mouseDown = false
+
+	update: =>
+		keysPressed.length = 0
+		keysReleased.length = 0
 
 window.Input = new Input
 

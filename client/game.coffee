@@ -85,6 +85,8 @@ class Game
 	loop: =>
 		stats.begin()
 
+		Input.update()
+
 		requestAnimFrame @loop
 
 		for e in @entities
@@ -96,9 +98,6 @@ class Game
 			lastY = @hero.y
 
 			@sio.emit 'mv', @hero.x, @hero.y
-		
-		if Math.random() > 0.99
-			@sio.emit 'chat', "Some random message #{Math.random()}"
 
 		@renderer.render @stage
 
