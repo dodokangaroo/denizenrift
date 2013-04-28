@@ -26,8 +26,8 @@ class Input
 			@mouseDown = false
 
 	update: =>
-		keysPressed.length = 0
-		keysReleased.length = 0
+		@keysPressed.length = 0
+		@keysReleased.length = 0
 
 window.Input = new Input
 
