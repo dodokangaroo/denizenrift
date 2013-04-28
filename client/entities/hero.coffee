@@ -35,8 +35,8 @@ class Hero
 
 	update: =>
 
-		# if player controlled
-		if @userControlled
+		# if player controlled and chatin is not selected
+		if @userControlled && !$(.chatin).is(':focus')
 			dx = 0
 			dy = 0
 
