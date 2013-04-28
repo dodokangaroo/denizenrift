@@ -29,6 +29,9 @@ class Game
 
 		canvas = $('.dr .canvas')
 
+		# show chat
+		$('.chatbox').removeClass 'invisible'
+
 		@stage = new PIXI.Stage
 		@renderer = PIXI.autoDetectRenderer 1024, 640
 			
@@ -84,8 +87,6 @@ class Game
 
 	loop: =>
 		stats.begin()
-
-		Input.update()
 
 		requestAnimFrame @loop
 
