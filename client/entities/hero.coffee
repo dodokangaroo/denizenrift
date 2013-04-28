@@ -5,26 +5,37 @@ class Hero
 
 	speed: 2
 
+	# is this the local user
 	userControlled: false
 
+	# sprite
 	spr: null
+
+	# player info
+	data: null
 
 	constructor: (@game, @heroclass) ->
 		@setClass @heroclass
 
 	setClass: (@heroclass) =>
-		@sx = Config.GraphicOffset.Classes[heroclass].x
-		@sy = Config.GraphicOffset.Classes[heroclass].y
 
-		@basex = Config.GraphicOffset.Classes[heroclass].x
-
+		# remove old graphic
 		@game.stage.removeChild @spr if @spr?
 
-		@spr = new PIXI.MovieClip [PIXI.Texture.fromFrame "Hero #{@heroclass} 0.png"]
+		#get new graphic
+		@spr = new PIXI.MovieClip [
+			PIXI.Texture.fromFrame "Hero #{@heroclass} 0.png"
+			PIXI.Texture.fromFrame "Hero #{@heroclass} 1.png"
+			PIXI.Texture.fromFrame "Hero #{@heroclass} 2.png"
+			PIXI.Texture.fromFrame "Hero #{@heroclass} 3.png"
+		]
+
+		# add graphic
 		@game.stage.addChild @spr
 
 	update: =>
 
+		# if player controlled
 		if @userControlled
 			dx = 0
 			dy = 0
@@ -40,6 +51,7 @@ class Hero
 			dy = 0 if @y + dy < 0
 			dy = 0 if @y + dy > 640 - 16
 
+			# slow down diagonal moves
 			if dx != 0 && dy != 0
 				dx *= Math.SQRT1_2
 				dy *= Math.SQRT1_2

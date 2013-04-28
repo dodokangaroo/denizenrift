@@ -5,6 +5,6 @@ class CmdChat
 		@sio.on 'chat', (id, message) =>
 			user = @game.users[id]
 			return if !user? #error user doesnt exist
-			console.log(message)
+			console.log "#{user.data.name} said: #{message}"
 
 window.CmdChat = CmdChat

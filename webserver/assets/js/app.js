@@ -36,8 +36,16 @@
 
   login = function(fn) {
     $('.login').removeClass('invisible');
+    console.log('Connecting');
     sio = io.connect();
-    return sio.on('connect', onLogin(fn));
+    sio.on('connect', function() {
+      console.log('Connected');
+      return onLogin(fn);
+    });
+    return sio.on('disconnect', function() {
+      sio.socket.reconnect();
+      return console.log('Disconnected');
+    });
   };
 
   onLogin = function(fn) {
@@ -71,13 +79,16 @@
         $('.input').addClass('invisible');
         $('.spinner').removeClass('invisible');
         $('.txtpassword').val('');
+        console.log('Logging in');
         return sio.emit('login', user, pass, function(res) {
           if (res.success) {
+            console.log('Login success');
             $('.login').addClass('invisible');
             $(document).unbind('keydown');
             $('.btnlogin').unbind('click');
             return fn(res.user);
           } else {
+            console.log('Login failed');
             $('.input').removeClass('invisible');
             $('.spinner').addClass('invisible');
             return $('.txtstatus').html('Authentication failed');
@@ -110,7 +121,77 @@
 }).call(this);
 
 
-},{"./game.coffee":2,"./utils/utils.coffee":3,"./utils/input.coffee":4,"./data/config.coffee":5}],4:[function(require,module,exports){
+},{"./game.coffee":2,"./utils/utils.coffee":3,"./data/config.coffee":4,"./utils/input.coffee":5}],3:[function(require,module,exports){
+(function() {
+  window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
+      return window.setTimeout(callback, 1000 / 60);
+    };
+  })();
+
+}).call(this);
+
+
+},{}],4:[function(require,module,exports){
+(function() {
+  window.Config = {
+    Classes: {
+      0: {
+        Name: "Mage",
+        Description: "I'm a mage!",
+        Health: 200,
+        Attacks: [0]
+      },
+      1: {
+        Name: "Squire",
+        Description: "I'm a squire!",
+        Health: 300,
+        Attacks: []
+      },
+      2: {
+        Name: "Monk",
+        Description: "I'm a monk!",
+        Health: 250,
+        Attacks: []
+      },
+      3: {
+        Name: "Hunter",
+        Description: "I'm a hunter!",
+        Health: 250,
+        Attacks: []
+      }
+    },
+    GraphicOffset: {
+      Classes: {
+        0: {
+          x: 128,
+          y: 464
+        },
+        1: {
+          x: 64,
+          y: 464
+        },
+        2: {
+          x: 128,
+          y: 480
+        },
+        3: {
+          x: 0,
+          y: 464
+        }
+      }
+    },
+    Maps: {
+      0: {
+        Name: "Cake Land"
+      }
+    }
+  };
+
+}).call(this);
+
+
+},{}],5:[function(require,module,exports){
 (function() {
   var Input,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -255,76 +336,6 @@
 }).call(this);
 
 
-},{}],5:[function(require,module,exports){
-(function() {
-  window.Config = {
-    Classes: {
-      0: {
-        Name: "Mage",
-        Description: "I'm a mage!",
-        Health: 200,
-        Attacks: [0]
-      },
-      1: {
-        Name: "Squire",
-        Description: "I'm a squire!",
-        Health: 300,
-        Attacks: []
-      },
-      2: {
-        Name: "Monk",
-        Description: "I'm a monk!",
-        Health: 250,
-        Attacks: []
-      },
-      3: {
-        Name: "Hunter",
-        Description: "I'm a hunter!",
-        Health: 250,
-        Attacks: []
-      }
-    },
-    GraphicOffset: {
-      Classes: {
-        0: {
-          x: 128,
-          y: 464
-        },
-        1: {
-          x: 64,
-          y: 464
-        },
-        2: {
-          x: 128,
-          y: 480
-        },
-        3: {
-          x: 0,
-          y: 464
-        }
-      }
-    },
-    Maps: {
-      0: {
-        Name: "Cake Land"
-      }
-    }
-  };
-
-}).call(this);
-
-
-},{}],3:[function(require,module,exports){
-(function() {
-  window.requestAnimFrame = (function() {
-    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
-      return window.setTimeout(callback, 1000 / 60);
-    };
-  })();
-
-}).call(this);
-
-
 },{}],2:[function(require,module,exports){
 (function() {
   var Game, stats,
@@ -337,6 +348,8 @@
   require('./utils/input.coffee');
 
   require('./cmds/mv.coffee');
+
+  require('./cmds/chat.coffee');
 
   require('./cmds/setclass.coffee');
 
@@ -413,6 +426,7 @@
 
     Game.prototype.setupCmds = function() {
       new CmdMv(this.user, this, this.sio);
+      new CmdChat(this.user, this, this.sio);
       new CmdSetClass(this.user, this, this.sio);
       new CmdUserJoin(this.user, this, this.sio);
       return new CmdUserLeft(this.user, this, this.sio);
@@ -424,6 +438,7 @@
       h = new Hero(this, u.heroclass);
       h.x = u.x;
       h.y = u.y;
+      h.data = u;
       this.entities.push(h);
       return this.users[u.id] = h;
     };
@@ -447,6 +462,9 @@
         lastY = this.hero.y;
         this.sio.emit('mv', this.hero.x, this.hero.y);
       }
+      if (Math.random() > 0.99) {
+        this.sio.emit('chat', "Some random message " + (Math.random()));
+      }
       this.renderer.render(this.stage);
       return stats.end();
     };
@@ -460,7 +478,7 @@
 }).call(this);
 
 
-},{"./entities/gamemap.coffee":6,"./entities/hero.coffee":7,"./utils/input.coffee":4,"./cmds/mv.coffee":8,"./cmds/userjoin.coffee":9,"./cmds/setclass.coffee":10,"./cmds/userleft.coffee":11}],8:[function(require,module,exports){
+},{"./entities/gamemap.coffee":6,"./entities/hero.coffee":7,"./utils/input.coffee":5,"./cmds/mv.coffee":8,"./cmds/chat.coffee":9,"./cmds/setclass.coffee":10,"./cmds/userjoin.coffee":11,"./cmds/userleft.coffee":12}],8:[function(require,module,exports){
 (function() {
   var CmdMv;
 
@@ -486,6 +504,35 @@
   })();
 
   window.CmdMv = CmdMv;
+
+}).call(this);
+
+
+},{}],9:[function(require,module,exports){
+(function() {
+  var CmdChat;
+
+  CmdChat = (function() {
+    function CmdChat(user, game, sio) {
+      var _this = this;
+
+      this.user = user;
+      this.game = game;
+      this.sio = sio;
+      this.sio.on('chat', function(id, message) {
+        user = _this.game.users[id];
+        if (user == null) {
+          return;
+        }
+        return console.log("" + user.data.name + " said: " + message);
+      });
+    }
+
+    return CmdChat;
+
+  })();
+
+  window.CmdChat = CmdChat;
 
 }).call(this);
 
@@ -519,7 +566,7 @@
 }).call(this);
 
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function() {
   var CmdUserJoin;
 
@@ -531,7 +578,7 @@
       this.game = game;
       this.sio = sio;
       this.sio.on('userjoin', function(u) {
-        console.log("user " + u.id + " joined");
+        console.log("User " + u.id + " joined");
         return _this.game.addUser(u);
       });
     }
@@ -545,7 +592,7 @@
 }).call(this);
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function() {
   var CmdUserLeft;
 
@@ -557,7 +604,7 @@
       this.game = game;
       this.sio = sio;
       this.sio.on('userleft', function(id) {
-        console.log("user " + id + " left");
+        console.log("User " + id + " left");
         user = _this.game.users[id];
         if (user == null) {
           return;
@@ -610,7 +657,7 @@
 }).call(this);
 
 
-},{"../data/config.coffee":5}],7:[function(require,module,exports){
+},{"../data/config.coffee":4}],7:[function(require,module,exports){
 (function() {
   var Hero,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -626,6 +673,8 @@
 
     Hero.prototype.spr = null;
 
+    Hero.prototype.data = null;
+
     function Hero(game, heroclass) {
       this.game = game;
       this.heroclass = heroclass;
@@ -636,13 +685,10 @@
 
     Hero.prototype.setClass = function(heroclass) {
       this.heroclass = heroclass;
-      this.sx = Config.GraphicOffset.Classes[heroclass].x;
-      this.sy = Config.GraphicOffset.Classes[heroclass].y;
-      this.basex = Config.GraphicOffset.Classes[heroclass].x;
       if (this.spr != null) {
         this.game.stage.removeChild(this.spr);
       }
-      this.spr = new PIXI.MovieClip([PIXI.Texture.fromFrame("Hero " + this.heroclass + " 0.png")]);
+      this.spr = new PIXI.MovieClip([PIXI.Texture.fromFrame("Hero " + this.heroclass + " 0.png"), PIXI.Texture.fromFrame("Hero " + this.heroclass + " 1.png"), PIXI.Texture.fromFrame("Hero " + this.heroclass + " 2.png"), PIXI.Texture.fromFrame("Hero " + this.heroclass + " 3.png")]);
       return this.game.stage.addChild(this.spr);
     };
 
@@ -708,5 +754,5 @@
 }).call(this);
 
 
-},{"../data/config.coffee":5,"../utils/input.coffee":4}]},{},[1])
+},{"../data/config.coffee":4,"../utils/input.coffee":5}]},{},[1])
 ;

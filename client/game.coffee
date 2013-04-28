@@ -75,6 +75,7 @@ class Game
 		h = new Hero @, u.heroclass
 		h.x = u.x
 		h.y = u.y
+		h.data = u
 		@entities.push h
 		@users[u.id] = h
 
@@ -96,7 +97,8 @@ class Game
 
 			@sio.emit 'mv', @hero.x, @hero.y
 		
-		@sio.emit 'chat', "Some random message"
+		if Math.random() > 0.99
+			@sio.emit 'chat', "Some random message #{Math.random()}"
 
 		@renderer.render @stage
 
