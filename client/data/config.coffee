@@ -5,6 +5,7 @@ window.Config =
 			Name: "Mage"
 			Description: "I'm a mage!"
 			Health: 200
+			Mana: 200
 			Attacks: [0]
 			Str: 5
 			Int: 15
@@ -13,6 +14,7 @@ window.Config =
 			Name: "Squire"
 			Description: "I'm a squire!"
 			Health: 300
+			Mana: 100
 			Attacks: []
 			Str: 13
 			Int: 7
@@ -29,6 +31,7 @@ window.Config =
 			Name: "Hunter"
 			Description: "I'm a hunter!"
 			Health: 250
+			Mana: 100
 			Attacks: []
 			Str: 5
 			Int: 5

@@ -6,5 +6,7 @@ class CmdSetClass
 			user = @game.users[id]
 			return if !user? #error user doesnt exist
 			user.setClass heroclass
+			user.heroclass.Health += user.heroclass.Str * 10
+			user.heroclass.Mana += user.heroclass.Int * 13				
 
 window.CmdSetClass = CmdSetClass
