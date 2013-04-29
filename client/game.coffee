@@ -15,15 +15,30 @@ stats.domElement.style.position = 'absolute'
 stats.domElement.style.left = '0px'
 stats.domElement.style.top = '0px'
 
+# start loading straight away
+
+spriteSheets = [
+	'/sprites/entities.json'
+	'/sprites/objects.json'
+	'/sprites/ui.json'
+]
+
+assetsLoaded = false
+assetLoader = new PIXI.AssetLoader spriteSheets
+assetLoader.onComplete = =>
+	assetsLoaded = true
+assetLoader.load()
 
 class Game
 
 	entities: []
 	users: {}
-	spriteSheets: ['sprites/entities.json', '/sprites/objects.json']
 
 	lastX: -1
 	lastY: -1
+
+	# stat ui window
+	statWin: null
 
 	constructor: (@sio, @user, @heroclass, @userlist) ->
 
@@ -44,11 +59,14 @@ class Game
 
 		@setupCmds()
 
-		loader = new PIXI.AssetLoader @spriteSheets
-		loader.onComplete = =>
+		# did we load before game started
+		if assetsLoaded
 			@init()
 			@run()
-		loader.load()
+		else # wait for load
+			assetLoader.onComplete = =>
+				@init()
+				@run()
 
 	init: ->
 
@@ -56,6 +74,11 @@ class Game
 
 		@stage.addChild @map.spr
 		@entities.push @map
+
+		@statWin = new PIXI.Sprite PIXI.Texture.fromFrame "Stat Window.png"
+		@stage.addChild @statWin
+		@statWin.position.x = 1024 - 110 - 2
+		@statWin.position.y = 640 - 62 - 2
 
 		# create our hero
 		@hero = new Hero @, @heroclass, true
@@ -100,6 +123,16 @@ class Game
 
 		@doMovement()
 		@doChat()
+
+		# keep ui on top
+		lastChild = @stage.children[@stage.children.length - 1]
+		if @statWin isnt lastChild
+			@stage.swapChildren @statWin, lastChild
+
+		# keep your hero above others, but below ui
+		lastChild = @stage.children[@stage.children.length - 2]
+		if @hero.sprContainer isnt lastChild
+			@stage.swapChildren @hero.sprContainer, lastChild
 
 		# let pixijs render
 		@renderer.render @stage

@@ -1,5 +1,6 @@
 require '../data/config.coffee'
 require '../utils/input.coffee'
+require './statbar.coffee'
 
 class Hero
 
@@ -20,6 +21,12 @@ class Hero
 	# hovering img
 	#hoverSpr: null
 
+	# health bar
+	healthbar: null
+
+	# mana bar
+	manabar: null
+
 	constructor: (@game, @heroclass, @userControlled = false) ->
 		
 		@sprContainer = new PIXI.DisplayObjectContainer
@@ -28,6 +35,24 @@ class Hero
 		@allowHover() if !@userControlled
 
 		@setClass @heroclass
+
+		@healthbar = new StatBar (@userControlled ? 1 : 0)
+		@sprContainer.addChild @healthbar.spr
+		@healthbar.spr.position.x = -2
+		@healthbar.spr.position.y = -6
+
+		@healthbar.fill.scale.x = Math.random()
+
+		if @userControlled
+			manabar = new StatBar 2
+			@sprContainer.addChild manabar.spr
+			manabar.spr.position.x = -2
+			manabar.spr.position.y = -6
+
+			@healthbar.spr.position.y = -9
+
+			manabar.fill.scale.x = Math.random()
+
 
 	setClass: (@heroclass) =>
 
@@ -58,10 +83,8 @@ class Hero
 			dx += @speed if Input.keys[Key.D]
 
 			# Checking if the user goes outside boundaries
-			dx = 0 if @x + dx < 0	
-			dx = 0 if @x + dx > 1024 - 16
-			dy = 0 if @y + dy < 0
-			dy = 0 if @y + dy > 640 - 16
+			dx = 0 if @game.map.collide @x + dx, @y 
+			dy = 0 if @game.map.collide @x, @y + dy
 
 			# slow down diagonal moves
 			if dx != 0 && dy != 0
@@ -97,7 +120,7 @@ class Hero
 		@sprContainer.setInteractive true
 		@sprContainer.mouseover = @onMouseOver
 		@sprContainer.mouseout = @onMouseOut
-		@sprContainer.hitArea = new PIXI.Rectangle 0, 0, 16, 16
+		@sprContainer.hitArea = new PIXI.Rectangle -8, -8, 32, 32
 
 		#@hoverSpr.animationSpeed = 0.05
 

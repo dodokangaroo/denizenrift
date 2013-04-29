@@ -15,4 +15,11 @@ class GameMap
 
 	update: =>
 
+	collide: (x, y) ->
+		x < 0 or
+		x > 1008 or
+		y < 0 or
+		y > 624 or
+		(x > 896 and y > 560) # ui
+
 window.GameMap = GameMap
