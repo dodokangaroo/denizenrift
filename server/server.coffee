@@ -10,7 +10,7 @@ class Server
 	cmds: [
 		require('./cmds/mv'),
 		require('./cmds/chat'),
-		require('./cmds/setclass')
+		require('./cmds/setjob')
 	]
 
 	constructor: (@express, @io) ->

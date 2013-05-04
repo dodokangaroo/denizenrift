@@ -16,10 +16,10 @@ $().ready ->
 		return false
 
 	login (user) ->
-		selectHero user, (heroclass) ->
-			sio.emit 'setclass', heroclass
+		selectHero user, (job) ->
+			sio.emit 'setjob', job
 
-			game = new Game sio, user, heroclass, userlist
+			game = new Game sio, user, job, userlist
 
 		sio.on 'userlist', (users) =>
 			userlist = users
@@ -101,7 +101,7 @@ selectHero = (user, fn) ->
 
 	$('.selecthero').removeClass 'invisible'
 
-	for i, hero of Config.Classes
+	for i, hero of Config.Jobs
 		$('.selectherobox').append """
 									<div class='herobox' value='#{i}'>
 										<div class='portrait hero#{i}'></div>

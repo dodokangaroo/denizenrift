@@ -5,7 +5,7 @@ class User
 	name: null
 	x: 0
 	y: 0
-	heroclass: 0
+	job: 0
 
 	constructor: (@socket, @id, @name) ->
 
@@ -16,7 +16,7 @@ class User
 			name: @name
 			x: @x
 			y: @y
-			heroclass: @heroclass
+			job: @job
 		}
 
 

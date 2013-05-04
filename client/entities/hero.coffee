@@ -27,44 +27,44 @@ class Hero
 	# mana bar
 	manabar: null
 
-	constructor: (@game, @heroclass, @userControlled = false) ->
+	x: 0
+	y: 0
+
+	constructor: (@game, @job, @userControlled = false) ->
 		
 		@sprContainer = new PIXI.DisplayObjectContainer
 
 		# allow hover on other players
 		@allowHover() if !@userControlled
 
-		@setClass @heroclass
+		@setJob @job
 
 		@healthbar = new StatBar (@userControlled ? 1 : 0)
 		@sprContainer.addChild @healthbar.spr
 		@healthbar.spr.position.x = -2
-		@healthbar.spr.position.y = -6
+		@healthbar.spr.position.y = -9
 
 		@healthbar.fill.scale.x = Math.random()
 
-		if @userControlled
-			manabar = new StatBar 2
-			@sprContainer.addChild manabar.spr
-			manabar.spr.position.x = -2
-			manabar.spr.position.y = -6
+		manabar = new StatBar 2
+		@sprContainer.addChild manabar.spr
+		manabar.spr.position.x = -2
+		manabar.spr.position.y = -6
 
-			@healthbar.spr.position.y = -9
-
-			manabar.fill.scale.x = Math.random()
+		manabar.fill.scale.x = Math.random()
 
 
-	setClass: (@heroclass) =>
+	setJob: (@job) =>
 
 		# remove old graphic
 		@sprContainer.removeChild @spr if @spr?
 
 		#get new graphic
 		@spr = new PIXI.MovieClip [
-			PIXI.Texture.fromFrame "Hero #{@heroclass} 0.png"
-			PIXI.Texture.fromFrame "Hero #{@heroclass} 1.png"
-			PIXI.Texture.fromFrame "Hero #{@heroclass} 2.png"
-			PIXI.Texture.fromFrame "Hero #{@heroclass} 3.png"
+			PIXI.Texture.fromFrame "Hero #{@job} 0.png"
+			PIXI.Texture.fromFrame "Hero #{@job} 1.png"
+			PIXI.Texture.fromFrame "Hero #{@job} 2.png"
+			PIXI.Texture.fromFrame "Hero #{@job} 3.png"
 		]
 
 		# add graphic
@@ -81,6 +81,10 @@ class Hero
 			dy += @speed if Input.keys[Key.S]
 			dx -= @speed if Input.keys[Key.A]
 			dx += @speed if Input.keys[Key.D]
+
+			if Input.keys[Key.SHIFT]
+				dx *= 5
+				dy *= 5
 
 			# Checking if the user goes outside boundaries
 			dx = 0 if @game.map.collide @x + dx, @y 

@@ -1,6 +1,6 @@
 window.Config = 
 
-	Classes:
+	Jobs:
 		0:
 			Name: "Mage"
 			Description: "I'm a mage!"
@@ -38,7 +38,7 @@ window.Config =
 			Agi: 15
 
 	GraphicOffset:
-		Classes:
+		Jobs:
 			0:
 				x: 128
 				y: 464

@@ -4,7 +4,7 @@ require './utils/input.coffee'
 
 require './cmds/mv.coffee'
 require './cmds/chat.coffee'
-require './cmds/setclass.coffee'
+require './cmds/setjob.coffee'
 require './cmds/userjoin.coffee'
 require './cmds/userleft.coffee'
 
@@ -23,11 +23,23 @@ spriteSheets = [
 	'/sprites/ui.json'
 ]
 
+mapData = null
+
+mapLoaded = false
 assetsLoaded = false
+
+mapLoader = null
+assetLoader = null
+
 assetLoader = new PIXI.AssetLoader spriteSheets
 assetLoader.onComplete = =>
+	console.log 'Assets loaded'
 	assetsLoaded = true
 assetLoader.load()
+
+mapLoader = $.get '/maps/map1.json', (data) ->
+	console.log 'Map loaded'
+	mapData = data
 
 class Game
 
@@ -37,10 +49,20 @@ class Game
 	lastX: -1
 	lastY: -1
 
+	w: 1024
+	h: 640
+	halfw: 512
+	halfh: 320
+
 	# stat ui window
 	statWin: null
 
-	constructor: (@sio, @user, @heroclass, @userlist) ->
+	# are all the assets loaded
+	loaded: false
+
+	constructor: (@sio, @user, @job, @userList) ->
+
+		console.log 'New game'
 
 		canvas = $('.dr .canvas')
 
@@ -60,15 +82,35 @@ class Game
 		@setupCmds()
 
 		# did we load before game started
-		if assetsLoaded
+		if assetsLoaded and mapLoaded
 			@init()
 			@run()
 		else # wait for load
-			assetLoader.onComplete = =>
-				@init()
-				@run()
+			if !assetsLoaded
+				# wait for assets to load
+				assetLoader.onComplete = =>
+					assetsLoaded = true
+					console.log 'Assets loaded'
+					# did maps loaded in the meantime
+					if mapLoaded
+						@init()
+						@run()
+			if !mapLoaded
+				# wait for maps to load
+				mapLoader.done =>
+					mapLoaded = true
+					console.log 'Map loaded'
+					# did assets load in the meantime
+					if assetsLoaded
+						@init()
+						@run()
+
 
 	init: ->
+
+		console.log 'Initializing'
+
+		@loaded = true
 
 		@map = new GameMap 0
 
@@ -81,33 +123,40 @@ class Game
 		@statWin.position.y = 640 - 62 - 2
 
 		# create our hero
-		@hero = new Hero @, @heroclass, true
+		@hero = new Hero @, @job, true
 
 		@hero.x = 128
 		@hero.y = 128
 
-		@stage.addChild @hero.sprContainer
+		console.log @hero.x, @hero.y
+
+		@map.spr.addChild @hero.sprContainer
 	
 		@entities.push @hero
 
-		for u in @userlist
+		for u in @userList
 			@addUser u
 
 	setupCmds: ->
 		new CmdMv @user, @, @sio
 		new CmdChat @user, @, @sio
-		new CmdSetClass @user, @, @sio
+		new CmdSetJob @user, @, @sio
 		new CmdUserJoin @user, @, @sio
 		new CmdUserLeft @user, @, @sio
 
 	addUser: (u) =>
-		h = new Hero @, u.heroclass
-		h.x = u.x
-		h.y = u.y
-		h.data = u
-		@entities.push h
-		@users[u.id] = h
-		@stage.addChild h.sprContainer
+
+		@userList.push u
+
+		if @loaded
+
+			h = new Hero @, u.job
+			h.x = u.x
+			h.y = u.y
+			h.data = u
+			@entities.push h
+			@users[u.id] = h
+			@map.spr.addChild h.sprContainer
 
 	run: ->
 		@loop()
@@ -124,15 +173,22 @@ class Game
 		@doMovement()
 		@doChat()
 
-		# keep ui on top
+		###
+		# keep ui on top -------- ui is now always above map 
 		lastChild = @stage.children[@stage.children.length - 1]
 		if @statWin isnt lastChild
 			@stage.swapChildren @statWin, lastChild
+		###
 
-		# keep your hero above others, but below ui
-		lastChild = @stage.children[@stage.children.length - 2]
+		###
+		# keep your hero above others
+		lastChild = @map.spr.children[@map.spr.children.length - 1]
 		if @hero.sprContainer isnt lastChild
-			@stage.swapChildren @hero.sprContainer, lastChild
+			@map.spr.swapChildren @hero.sprContainer, lastChild
+		###
+
+		@map.x = -Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
+		@map.y = -Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
 
 		# let pixijs render
 		@renderer.render @stage
