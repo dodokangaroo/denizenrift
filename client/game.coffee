@@ -39,6 +39,7 @@ assetLoader.load()
 
 mapLoader = $.get '/maps/map1.json', (data) ->
 	console.log 'Map loaded'
+	mapLoaded = true
 	mapData = data
 
 class Game
@@ -97,7 +98,8 @@ class Game
 						@run()
 			if !mapLoaded
 				# wait for maps to load
-				mapLoader.done =>
+				mapLoader.done (data) =>
+					mapData = data
 					mapLoaded = true
 					console.log 'Map loaded'
 					# did assets load in the meantime
@@ -112,7 +114,7 @@ class Game
 
 		@loaded = true
 
-		@map = new GameMap 0
+		@map = new GameMap 0, mapData
 
 		@stage.addChild @map.spr
 		@entities.push @map
@@ -127,8 +129,6 @@ class Game
 
 		@hero.x = 128
 		@hero.y = 128
-
-		console.log @hero.x, @hero.y
 
 		@map.spr.addChild @hero.sprContainer
 	
