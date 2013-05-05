@@ -17,6 +17,70 @@
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 0.png":
+		{
+			"frame": {"x":0,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 1.png":
+		{
+			"frame": {"x":16,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 2.png":
+		{
+			"frame": {"x":32,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 3.png":
+		{
+			"frame": {"x":48,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 4.png":
+		{
+			"frame": {"x":64,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 5.png":
+		{
+			"frame": {"x":80,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 6.png":
+		{
+			"frame": {"x":96,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
+		},
+		"Fire 7.png":
+		{
+			"frame": {"x":112,"y":208,"w":16,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+			"sourceSize": {"w":16,"h":16}
 		}
 	},
 	"meta": {

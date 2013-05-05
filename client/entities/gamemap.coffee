@@ -18,6 +18,9 @@ class GameMap
 	x: 0
 	y: 0
 
+	mapW: 0
+	mapH: 0
+
 	spr: new PIXI.DisplayObjectContainer
 	bglayer: new PIXI.DisplayObjectContainer 
 	bglayer2: new PIXI.DisplayObjectContainer
@@ -75,13 +78,14 @@ class GameMap
 		# don't want scaling so set canvas dimensions too
 		w = canvas.width = data.width * @tw
 		h = canvas.height = data.height * @th
+		tilesWide = maptx.width / @tw
+		tilesHigh = maptx.height / @th
 
 		y = 0
 
 		makeRow = =>
 			done = false
-			tilesWide = maptx.width / @tw
-			tilesHigh = maptx.height / @th
+			
 			for i in [0..30]
 				break if done
 				for x in [0..w-1]
@@ -109,6 +113,9 @@ class GameMap
 	makeCollisionMap: (data) ->
 		w = data.width
 		h = data.height
+
+		@mapW = w
+		@mapH = h
 
 		# create map
 		@collisionMap = []
@@ -143,6 +150,8 @@ class GameMap
 
 		tx = Math.floor(x / @tw)
 		ty = Math.floor(y / @th)
+
+		return false if ty < 0 or tx < 0 or tx >= @mapW or ty >= @mapH
 
 		# check each side of char
 		return @collisionMap[ty][tx]

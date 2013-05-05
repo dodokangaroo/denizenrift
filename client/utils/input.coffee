@@ -14,12 +14,13 @@ class Input
 			@keysPressed[e.which] = true
 		div.keyup (e) =>
 			@keys[e.which] = false
-			@keysReleased[e.which] = false
+			@keysReleased[e.which] = true
 
 	addMouseListener: (div) =>
 		div.mousemove (e) =>
-			@mouseX = e.pageX - $(div)[0].offsetLeft
-			@mouseY = e.pageY - $(div)[0].offsetTop
+			parent = $(e.target).parent().offset()
+			@mouseX = e.pageX - parent.left
+			@mouseY = e.pageY - parent.top
 		div.mousedown (e) =>
 			@mouseDown = true
 		div.mouseup (e) =>

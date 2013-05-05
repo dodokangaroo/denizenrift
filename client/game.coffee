@@ -1,5 +1,6 @@
 require './entities/gamemap.coffee'
 require './entities/hero.coffee'
+require './entities/fireball.coffee'
 require './utils/input.coffee'
 
 require './cmds/mv.coffee'
@@ -45,7 +46,13 @@ mapLoader = $.get '/maps/map1.json', (data) ->
 class Game
 
 	entities: []
+	addEntities: []
+	removeEntities: []
+
 	users: {}
+
+	# our player
+	hero: null
 
 	lastX: -1
 	lastY: -1
@@ -107,6 +114,11 @@ class Game
 						@init()
 						@run()
 
+	addEntity: (e) ->
+		@addEntities.push e
+
+	removeEntity: (e) ->
+		@removeEntities.push e
 
 	init: ->
 
@@ -117,7 +129,7 @@ class Game
 		@map = new GameMap 0, mapData
 
 		@stage.addChild @map.spr
-		@entities.push @map
+		@addEntity @map
 
 		@statWin = new PIXI.Sprite PIXI.Texture.fromFrame "Stat Window.png"
 		@stage.addChild @statWin
@@ -132,7 +144,7 @@ class Game
 
 		@map.herolayer.addChild @hero.sprContainer
 	
-		@entities.push @hero
+		@addEntity @hero
 
 		for u in @userList
 			@addUser u
@@ -154,7 +166,7 @@ class Game
 			h.x = u.x
 			h.y = u.y
 			h.data = u
-			@entities.push h
+			@addEntity h
 			@users[u.id] = h
 			@map.heroeslayer.addChild h.sprContainer
 
@@ -172,26 +184,26 @@ class Game
 
 		@doMovement()
 		@doChat()
-
-		###
-		# keep ui on top -------- ui is now always above map 
-		lastChild = @stage.children[@stage.children.length - 1]
-		if @statWin isnt lastChild
-			@stage.swapChildren @statWin, lastChild
-		###
-
-		###
-		# keep your hero above others
-		lastChild = @map.spr.children[@map.spr.children.length - 1]
-		if @hero.sprContainer isnt lastChild
-			@map.spr.swapChildren @hero.sprContainer, lastChild
-		###
+		@doAttack()
 
 		@map.x = -Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
 		@map.y = -Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
 
 		# let pixijs render
 		@renderer.render @stage
+
+		Input.update()
+
+		# add entitis at end of frame
+		for e in @addEntities
+			@entities.push e
+		@addEntities.length = 0
+
+		# remove entities at end of frame
+		for e in @removeEntities
+			i = @entities.indexOf e
+			@entities.splice i, 1 if i > 0
+		@removeEntities.length = 0
 
 		stats.end()
 
@@ -220,7 +232,45 @@ class Game
 		else if Input.keysPressed[Key.ESCAPE] && $('.chatin').is(':focus')
 			$('.chatin').blur()
 
-		Input.update()
+	doAttack: ->
+
+		if Input.hasFocus()
+			if Input.keysReleased[Key.DIGIT_1]
+
+				# -8 for the player width \ height
+				dx = Input.mouseX - @hero.x - 8
+				dy = Input.mouseY - @hero.y - 8
+				a = Math.atan2(dy, dx)
+
+				fb = new FireBall @, @hero.x, @hero.y, a
+
+				@addEntity fb
+				@map.heroeslayer.addChild fb.spr
+			else if Input.keysReleased[Key.DIGIT_2]
+
+				for i in [0..16]
+
+					fb = new FireBall @, @hero.x, @hero.y, i * (Math.PI / 8)
+
+					@addEntity fb
+					@map.heroeslayer.addChild fb.spr
+			else if Input.keysReleased[Key.DIGIT_3]
+
+				x = Input.mouseX
+				y = Input.mouseY
+				a = 0
+				n = 256
+
+				makeFire = =>
+					fb = new FireBall @, x, y, a
+					a += (Math.PI / 16)
+
+					@addEntity fb
+					@map.heroeslayer.addChild fb.spr
+
+					if n-- > 0
+						setTimeout makeFire, 10
+				makeFire()
 
 	printChat: (msg) ->
 		out = $('.chatout') 
