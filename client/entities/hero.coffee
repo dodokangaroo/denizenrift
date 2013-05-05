@@ -87,8 +87,15 @@ class Hero
 				dy *= 5
 
 			# Checking if the user goes outside boundaries
+
 			dx = 0 if @game.map.collide @x + dx, @y 
 			dy = 0 if @game.map.collide @x, @y + dy
+
+			# also check bottom right corner of char
+
+			dx = 0 if @game.map.collide @x + 16 + dx, @y + 16
+			dy = 0 if @game.map.collide @x + 16, @y + 16 + dy
+
 
 			# slow down diagonal moves
 			if dx != 0 && dy != 0
