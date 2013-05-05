@@ -130,7 +130,7 @@ class Game
 		@hero.x = 128
 		@hero.y = 128
 
-		@map.spr.addChild @hero.sprContainer
+		@map.herolayer.addChild @hero.sprContainer
 	
 		@entities.push @hero
 
@@ -156,7 +156,7 @@ class Game
 			h.data = u
 			@entities.push h
 			@users[u.id] = h
-			@map.spr.addChild h.sprContainer
+			@map.heroeslayer.addChild h.sprContainer
 
 	run: ->
 		@loop()

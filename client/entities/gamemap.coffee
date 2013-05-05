@@ -18,11 +18,22 @@ class GameMap
 	x: 0
 	y: 0
 
-	spr: null
-	tilemap: null
+	spr: new PIXI.DisplayObjectContainer
+	bglayer: new PIXI.DisplayObjectContainer 
+	bglayer2: new PIXI.DisplayObjectContainer
+	# other players layer
+	heroeslayer: new PIXI.DisplayObjectContainer
+	herolayer: new PIXI.DisplayObjectContainer
+	fglayer: new PIXI.DisplayObjectContainer
+
 
 	constructor: (@id, @mapData) ->
-		@spr = new PIXI.DisplayObjectContainer
+
+		@spr.addChild @bglayer
+		@spr.addChild @bglayer2
+		@spr.addChild @heroeslayer
+		@spr.addChild @herolayer
+		@spr.addChild @fglayer
 
 		if maptxLoaded
 			@makeTilemaps()
@@ -38,16 +49,13 @@ class GameMap
 		console.log 'Making tilemap'
 		# make this async callback as it may take a while
 		@makeTileMap @mapData.layers[0], (@tilemap) =>
-			console.log 'adding ' + @tilemap
-			@spr.addChild @tilemap
+			@bglayer.addChild @tilemap
 
 		@makeTileMap @mapData.layers[1], (@tilemap) =>
-			console.log 'adding ' + @tilemap
-			@spr.addChild @tilemap
+			@bglayer2.addChild @tilemap
 
 		@makeTileMap @mapData.layers[2], (@tilemap) =>
-			console.log 'adding ' + @tilemap
-			@spr.addChild @tilemap
+			@fglayer.addChild @tilemap
 
 	makeTileMap: (data, fn) ->
 		canvas = document.createElement 'canvas'
@@ -71,16 +79,13 @@ class GameMap
 					sx = (val % tilesWide) * @tw
 					sy = Math.floor(val / tilesWide) * @th
 
-					if y is 0
-						console.log sx, sy
-
 					ctx.drawImage maptx, 
 						sx, sy, 
 						@tw, @th, 
 						@tw * x, @th * y,
 						@tw, @th
 				y++
-				if y >= data.height - 1
+				if y >= data.height
 					console.log 'Created tilemap'
 					fn new PIXI.Sprite PIXI.Texture.fromCanvas canvas
 					done = true
