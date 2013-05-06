@@ -237,9 +237,13 @@ class Game
 		if Input.hasFocus()
 			if Input.keysReleased[Key.DIGIT_1]
 
+				# Caculating the screen offset
+				offSetX = Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
+				offSetY = Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
+
 				# -8 for the player width \ height
-				dx = Input.mouseX - @hero.x - 8
-				dy = Input.mouseY - @hero.y - 8
+				dx = Input.mouseX - @hero.x - 8 + offSetX
+				dy = Input.mouseY - @hero.y - 8 + offSetY
 				a = Math.atan2(dy, dx)
 
 				fb = new FireBall @, @hero.x, @hero.y, a
@@ -256,8 +260,12 @@ class Game
 					@map.heroeslayer.addChild fb.spr
 			else if Input.keysReleased[Key.DIGIT_3]
 
-				x = Input.mouseX
-				y = Input.mouseY
+				# Caculating the screen offset
+				offSetX = Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
+				offSetY = Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
+
+				x = Input.mouseX + offSetX
+				y = Input.mouseY + offSetY
 				a = 0
 				n = 256
 
