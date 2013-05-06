@@ -2,55 +2,48 @@ window.Config =
 
 	Jobs:
 		0:
-			Name: "Mage"
-			Description: "I'm a mage!"
-			Health: 200
-			Mana: 200
-			Attacks: [0]
-			Str: 5
-			Int: 15
-			Agi: 5
+			id: 0
+			name: 'Peasant'
+			description: "Why haven't I picked a class?"
 		1:
-			Name: "Squire"
-			Description: "I'm a squire!"
-			Health: 300
-			Mana: 100
-			Attacks: []
-			Str: 13
-			Int: 7
-			Agi: 5
+			id: 1
+			name: "Squire"
+			description: "I'm a squire!"
+			health: 300
+			mana: 100
+			attacks: []
+			str: 13
+			int: 7
+			agi: 5
 		2:
-			Name: "Monk"
-			Description: "I'm a monk!"
-			Health: 250
-			Attacks: []
-			Str: 10
-			Int: 7
-			Agi: 8
+			id: 2
+			name: "Monk"
+			description: "I'm a monk!"
+			health: 250
+			attacks: []
+			str: 10
+			int: 7
+			agi: 8
 		3:
-			Name: "Hunter"
-			Description: "I'm a hunter!"
-			Health: 250
-			Mana: 100
-			Attacks: []
-			Str: 5
-			Int: 5
-			Agi: 15
-
-	GraphicOffset:
-		Jobs:
-			0:
-				x: 128
-				y: 464
-			1:
-				x: 64
-				y: 464
-			2:
-				x: 128
-				y: 480
-			3:
-				x: 0
-				y: 464
+			id: 3
+			name: "Hunter"
+			description: "I'm a hunter!"
+			health: 250
+			mana: 100
+			attacks: []
+			str: 5
+			int: 5
+			agi: 15
+		4:
+			id: 4
+			name: "Mage"
+			description: "I'm a mage!"
+			health: 200
+			mana: 200
+			attacks: [0]
+			str: 5
+			int: 15
+			agi: 5
 
 	Maps:
 		0:

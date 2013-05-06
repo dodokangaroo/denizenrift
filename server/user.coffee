@@ -1,3 +1,5 @@
+Jobs = require './data/jobs'
+
 class User
 
 	socket: null
@@ -5,7 +7,9 @@ class User
 	name: null
 	x: 0
 	y: 0
-	job: 0
+	dx: 0
+	dy: 0
+	job: Jobs[0]
 
 	constructor: (@socket, @id, @name) ->
 
@@ -16,7 +20,7 @@ class User
 			name: @name
 			x: @x
 			y: @y
-			job: @job
+			job: @job?.id
 		}
 
 

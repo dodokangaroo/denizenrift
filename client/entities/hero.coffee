@@ -30,6 +30,9 @@ class Hero
 	x: 0
 	y: 0
 
+	dx: 0
+	dy: 0
+
 	constructor: (@game, @job, @userControlled = false) ->
 		
 		@sprContainer = new PIXI.DisplayObjectContainer
@@ -74,8 +77,8 @@ class Hero
 
 		# if player controlled and chatin is not selected
 		if @userControlled && Input.hasFocus()
-			dx = 0
-			dy = 0
+			dx = @dx = 0
+			dy = @dy = 0
 
 			dy -= @speed if Input.keys[Key.W]
 			dy += @speed if Input.keys[Key.S]
@@ -102,15 +105,16 @@ class Hero
 				dx *= Math.SQRT1_2
 				dy *= Math.SQRT1_2
 
-			@x += dx
-			@y += dy
+			@dx = dx
+			@dy = dy
+			
+		@x += dx
+		@y += dy
 
-			
-			@spr.gotoAndStop 2 if dx < 0
-			@spr.gotoAndStop 0 if dx > 0
-			@spr.gotoAndStop 3 if dy < 0
-			@spr.gotoAndStop 1 if dy > 0
-			
+		@spr.gotoAndStop 2 if dx < 0
+		@spr.gotoAndStop 0 if dx > 0
+		@spr.gotoAndStop 3 if dy < 0
+		@spr.gotoAndStop 1 if dy > 0
 
 		@sprContainer.position.x = @x | 0
 		@sprContainer.position.y = @y | 0

@@ -102,12 +102,13 @@ selectHero = (user, fn) ->
 	$('.selecthero').removeClass 'invisible'
 
 	for i, hero of Config.Jobs
-		$('.selectherobox').append """
-									<div class='herobox' value='#{i}'>
-										<div class='portrait hero#{i}'></div>
-										<div class='name unselectable'>#{hero.Name}</div>
-									</div>
-								   """
+		if i > 0
+			$('.selectherobox').append """
+										<div class='herobox' value='#{i}'>
+											<div class='portrait hero#{i}'></div>
+											<div class='name unselectable'>#{hero.name}</div>
+										</div>
+									   """
 
 	$('.herobox').live 'click', (e) =>
 
