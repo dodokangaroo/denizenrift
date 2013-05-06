@@ -213,7 +213,7 @@ class Game
 			lastX = @hero.x
 			lastY = @hero.y
 
-			@sio.emit 'mv', @hero.x, @hero.y
+			@sio.emit 'mv', @hero.x, @hero.y, @hero.dx, @hero.dy
 
 	doChat: ->
 		# if user press enter 
