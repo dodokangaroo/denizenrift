@@ -1,6 +1,7 @@
 require './entities/gamemap.coffee'
 require './entities/hero.coffee'
 require './entities/fireball.coffee'
+require './entities/camera.coffee'
 require './utils/input.coffee'
 
 require './cmds/mv.coffee'
@@ -68,6 +69,9 @@ class Game
 	# are all the assets loaded
 	loaded: false
 
+	# Camera for offset
+	camera: null
+
 	constructor: (@sio, @user, @job, @userList) ->
 
 		console.log 'New game'
@@ -80,7 +84,7 @@ class Game
 		# create an interactive pixi stage
 		@stage = new PIXI.Stage 0x202020, true
 		@renderer = PIXI.autoDetectRenderer 1024, 640
-			
+		
 		canvas.append @renderer.view
 		canvas.append stats.domElement
 
@@ -149,6 +153,9 @@ class Game
 		for u in @userList
 			@addUser u
 
+		# create the camera which will contain the offset
+		@camera = new Camera @map.w, @map.h, @w, @h
+
 	setupCmds: ->
 		new CmdMv @user, @, @sio
 		new CmdChat @user, @, @sio
@@ -188,6 +195,7 @@ class Game
 
 		@map.x = -Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
 		@map.y = -Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
+		@camera.update @hero.x, @hero.y
 
 		# let pixijs render
 		@renderer.render @stage
@@ -237,13 +245,9 @@ class Game
 		if Input.hasFocus()
 			if Input.keysReleased[Key.DIGIT_1]
 
-				# Caculating the screen offset
-				offSetX = Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
-				offSetY = Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
-
 				# -8 for the player width \ height
-				dx = Input.mouseX - @hero.x - 8 + offSetX
-				dy = Input.mouseY - @hero.y - 8 + offSetY
+				dx = Input.mouseX - @hero.x - 8 + @camera.offSetX
+				dy = Input.mouseY - @hero.y - 8 + @camera.offSetY
 				a = Math.atan2(dy, dx)
 
 				fb = new FireBall @, @hero.x, @hero.y, a
@@ -260,12 +264,8 @@ class Game
 					@map.heroeslayer.addChild fb.spr
 			else if Input.keysReleased[Key.DIGIT_3]
 
-				# Caculating the screen offset
-				offSetX = Math.min(Math.max(0, @hero.x - @halfw), @map.w - @w)
-				offSetY = Math.min(Math.max(0, @hero.y - @halfh), @map.h - @h)
-
-				x = Input.mouseX + offSetX
-				y = Input.mouseY + offSetY
+				x = Input.mouseX + @camera.offSetX
+				y = Input.mouseY + @camera.offSetY
 				a = 0
 				n = 256
 
