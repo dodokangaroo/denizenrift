@@ -2,7 +2,7 @@ class FireBall
 
 	spr: null
 
-	spd: 2
+	spd: 3
 
 	x: 0
 	y: 0
