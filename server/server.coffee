@@ -3,7 +3,7 @@ User = require './user'
 
 class Server
 
-	users: []
+	users: null
 	uniqueID: 0
 
 	#all cmds client sends to server
@@ -14,6 +14,8 @@ class Server
 	]
 
 	constructor: (@express, @io) ->
+
+		@users = []
 
 		console.log 'Server started'
 
@@ -63,3 +65,4 @@ class Server
 			fn res
 
 module.exports = Server
+
