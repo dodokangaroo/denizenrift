@@ -1,7 +1,6 @@
 express = require 'express'
 http = require 'http'
 gzippo = require 'gzippo'
-sio = require 'socket.io'
 
 require 'coffee-script'
 
@@ -25,15 +24,9 @@ app.configure ->
 server = app.listen 80, =>
 	console.log "Express server listening on port %d in %s mode", server.address().port, app.settings.env
 
-io = sio.listen server
-io.set 'log level', 1 #disable logging
-io.set 'close timeout', 360
-io.set 'heartbeat timeout', 10
-io.set 'heartbeat interval', 5
-
 app.get '/', require("#{__dirname}/routes/index")
 
 console.log 'Starting Denizen Rift Server'
 
-Server = require '../server/server'
-new Server server, io
+Server = require '../server/app'
+new Server server

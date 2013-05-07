@@ -9,8 +9,8 @@
     "gzippo": "~0.2.0",
     "jade": "~0.29.0",
     "stylus": "~0.32.1",
-    "socket.io": "~0.9.14",
-    "coffeeify": "~0.4.0"
+    "coffeeify": "~0.4.0",
+    "ws": "~0.4.25"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,6 @@
   "devDependencies": {
     "wr": "~1.2.2",
     "coffee-script": "*",
-    "browserify":"*"
+    "browserify": "*"
   }
 }
