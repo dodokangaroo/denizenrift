@@ -1,5 +1,7 @@
 window.Config = 
 
+	Server: 'ws://localhost:80'
+
 	Jobs:
 		0:
 			id: 0

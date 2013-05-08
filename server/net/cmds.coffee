@@ -11,6 +11,9 @@ SC =
 	MOVE: 'c'
 	CHAT: 'd'
 	SET_JOB: 'e'
+	USER_JOIN: 'f'
+	USER_LEFT: 'g'
+	SET_CMDS: 'setcmds'
 
 module.exports = 
 	CS: CS

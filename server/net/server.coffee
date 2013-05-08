@@ -6,6 +6,8 @@ Connection = require './connection'
 CmdHandler = require './cmdhandler'
 # create specific sets of handlers
 CmdFactory = CmdHandler.Factory
+# list of cmds
+CMD = require './cmds'
 
 class Server
 
@@ -33,6 +35,10 @@ class Server
 
 			# create a new user connection
 			c = new Connection @, id, socket
+
+			# send cmd list
+
+			@send c, [CMD.SC.SET_CMDS, CMD]
 
 			# store by id for fast lookups
 			@connections[id] = c

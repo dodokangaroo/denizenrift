@@ -4,12 +4,6 @@ require './entities/fireball.coffee'
 require './entities/camera.coffee'
 require './utils/input.coffee'
 
-require './cmds/mv.coffee'
-require './cmds/chat.coffee'
-require './cmds/setjob.coffee'
-require './cmds/userjoin.coffee'
-require './cmds/userleft.coffee'
-
 stats = new Stats()
 stats.setMode 0
 

@@ -1,121 +1,125 @@
+require './ui.coffee'
 require './game.coffee'
-require './utils/utils.coffee'
-require './utils/input.coffee'
 require './data/config.coffee'
+require './net/cmdhandler.coffee'
+require './net/connection.coffee'
+require './net/cmds.coffee'
 
-sio = null
-game = null
-userlist = []
+class App
 
-$().ready ->
+	ui: null
+	con: null
 
-	# disable dragging the page
-	$('.canvas')[0].draggable = false
-	$('.canvas')[0].onmousedown = (e) ->
-		e.preventDefault()
-		return false
+	constructor: ->
+		# page load
+		$().ready =>
 
-	login (user) ->
-		selectHero user, (job) ->
-			sio.emit 'setjob', job
+			@ui = new UI
+			# disable mouse dragging the canvas
+			@ui.disableDrag()
 
-			game = new Game sio, user, job, userlist
+			# show connecting anim
+			@ui.showSpinner()
+			
+			console.log 'Connecting'
+			# connect websocket
+			@connect =>
 
-		sio.on 'userlist', (users) =>
-			userlist = users
+				console.log 'Connected'
+				console.log 'Waiting for cmds'
 
-		sio.on 'userjoin', (user) =>
-			userlist.push user
+				@getCmdList @con, =>
+					
+					@ui.hideSpinner()
+					@ui.showLogin()
 
-login = (fn) =>
+					@login @con, =>
+						console.log "Logged in"
 
-	#show spinner while sio.io connects
-	$('.login').removeClass 'invisible'
+	connect: (fn) ->
+		@con = new Connection
+		@con.connect Config.Server, =>
+			fn() fn?
+		, =>
+			# just reload page on disconnect for now
+			document.location.reload()
 
-	console.log 'Connecting'
+	getCmdList: (fn) ->
+		handler = new CmdHandler @, @con
+		# this is to receive updated cmd list from server
+		handler.setHandlers CmdHandler.Factory.startHandlers()
+		# set handler
+		@con.handler = handler
 
-	sio = io.connect()
-	sio.on 'connect', =>
-		console.log 'Connected'
-		onLogin fn
+		# wait for cmd list from server
+		handler.intercept = (id) =>
+			# make sure it's the correct msg
+			if id is CMD.SC.SET_CMDS
+				handler.intercept = null
+				handler.setHandlers CmdHandler.Factory.mainHandlers()
+				fn() if fn?
 
-	sio.on 'disconnect', ->
-		sio.socket.reconnect()
-		console.log 'Disconnected'
+	login: (fn) =>
 
+		$(document).keydown (e) =>
+			if e.which is Key.ENTER
+				@ui.btnLogin.click()
 
-onLogin = (fn) =>
+		@ui.login.btnLogin.click =>
 
-	$('.input').removeClass 'invisible'
-	$('.spinner').addClass 'invisible'
+			user = @ui.login.txtUsername.val()
+			pass = @ui.login.txtPassword.val()
 
-	$(document).keydown (e) =>
-		if e.which is Key.ENTER
-			$('.btnlogin').click()
+			@ui.login.txtUsername.removeClass 'error'
+			@ui.login.txtPassword.removeClass 'error'
 
-	$('.btnlogin').click =>
+			err = false
 
-		user = $('.txtusername').val()
-		pass = $('.txtpassword').val()
+			@ui.login.txtStatus.html ''
 
-		$('.txtusername').removeClass 'error'
-		$('.txtpassword').removeClass 'error'
+			if user.length < 4
+				err = true
+				@ui.login.txtUsername.addClass 'error'
+				@ui.login.txtStatus.append '<p>Username must be 4 or more chars</p>'
+			if pass.length < 6
+				err = true
+				@ui.login.txtPassword.addClass 'error'
+				@ui.login.txtStatus.append '<p>Password must be 6 or more chars</p>'
 
-		err = false
+			if !err
+				@ui.hideLogin()
+				@ui.showSpinner()
 
-		$('.txtstatus').html ''
+				@ui.login.txtPassword.val ''
 
-		if user.length < 4
-			err = true
-			$('.txtusername').addClass 'error'
-			$('.txtstatus').append '<p>Username must be 4 or more chars</p>'
-		if pass.length < 6
-			err = true
-			$('.txtpassword').addClass 'error'
-			$('.txtstatus').append '<p>Password must be 6 or more chars</p>'
+				console.log 'Logging in'
 
-		if !err
-			$('.input').addClass 'invisible'
-			$('.spinner').removeClass 'invisible'
+				@con.send [CMD.CS.LOGIN, user, pass]
 
-			$('.txtpassword').val ''
+	loginSuccess: (user) ->
+		@ui.hideSpinner()
+		$(document).unbind 'keydown'
+		@ui.login.btnLogin.unbind 'click'
 
-			console.log 'Logging in'
-			sio.emit 'login', user, pass, (res) =>
-				
-				if res.success
-					console.log 'Login success'
-					$('.login').addClass 'invisible'
+	loginFailed: ->
+		@ui.hideSpinner()
+		@ui.showLogin()
+		$('.spinner').addClass 'invisible'
+		@ui.login.txtStatus.html 'Authentication failed'
 
-					$(document).unbind 'keydown'
-					$('.btnlogin').unbind 'click'
+	selectHero: (user, fn) ->
 
-					fn res.user
-				else
-					console.log 'Login failed'
-					$('.input').removeClass 'invisible'
-					$('.spinner').addClass 'invisible'
-					$('.txtstatus').html 'Authentication failed'
+		@ui.showSelectHero()	
 
-selectHero = (user, fn) ->
+		@ui.heroBoxes().live 'click', (e) =>
 
-	$('.selecthero').removeClass 'invisible'
+			@ui.hideSelectHero().addClass 'invisible'
 
-	for i, hero of Config.Jobs
-		if i > 0
-			$('.selectherobox').append """
-										<div class='herobox' value='#{i}'>
-											<div class='portrait hero#{i}'></div>
-											<div class='name unselectable'>#{hero.name}</div>
-										</div>
-									   """
+			heroIndex = $(e.currentTarget).attr 'value'
 
-	$('.herobox').live 'click', (e) =>
+			@ui.heroBoxes().unbind 'click'
 
-		$('.selecthero').addClass 'invisible'
+			fn heroIndex
 
-		heroIndex = $(e.currentTarget).attr 'value'
-
-		$('.herobox').unbind 'click'
-
-		fn heroIndex
+# begin
+new App
