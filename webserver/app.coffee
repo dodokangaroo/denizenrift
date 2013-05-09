@@ -29,4 +29,4 @@ app.get '/', require("#{__dirname}/routes/index")
 console.log 'Starting Denizen Rift Server'
 
 Server = require '../server/app'
-new Server server
+new Server server, app

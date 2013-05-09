@@ -1,5 +1,8 @@
 WebSocketServer = require('ws').Server
 
+# rooms
+Room = require '../lobby/room'
+RoomManager = require '../lobby/roommanager'
 # a user connection
 Connection = require './connection'
 # a user collection
@@ -15,12 +18,18 @@ class Server
 
 	# a list of all active connections
 	connections: null
+	# a list of rooms
+	rooms: null
 	# for generating unique connection ids
 	@UID: 0
 
 	constructor: (@webserver) ->
 
 		@connections = new ConnectionManager
+		@rooms = new RoomManager
+
+		r = @rooms.create()
+		@rooms.add r
 
 		# the ws library can hook onto express servers etc
 		@ws = new WebSocketServer server: @webserver
@@ -28,24 +37,34 @@ class Server
 		console.log 'Server started'
 
 		# connect
-		@ws.on 'connection', (socket) =>
+		@ws.on 'connection', @onConnect
 
-			# create a new user connection
-			c = @connections.create @, socket
-			@connections.add c
+	onConnect: (socket) =>
 
-			console.log "+##{c.id}"
+		# create a new user connection
+		c = @connections.create @, socket
+		@connections.add c
 
-			# send cmd list
-			@send c, [CMD.SC.SET_CMDS, CMD]
+		console.log "+##{c.id}"
 
-			# assign initial handlers
-			c.handler.setHandlers CmdFactory.beforeLogin()
-			
-			# disconnect
-			socket.on 'close', =>
-				@connections.remove c
-				console.log "-##{c.id}"
+		# send cmd list
+		@send c, [CMD.SC.SET_CMDS, CMD]
+
+		# assign initial handlers
+		c.handler.setHandlers CmdFactory.beforeLogin()
+		
+		# disconnect
+		socket.on 'close', =>
+			@onDisconnect(c)
+
+	onDisconnect: (c) ->
+		
+		# remove room
+		room = c.e.get('playerinfo')?.room
+		room.remove c if room?
+
+		@connections.remove c
+		console.log "-##{c.id}"
 
 	# send data to a single user
 	send: (c, data) ->

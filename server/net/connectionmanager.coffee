@@ -35,9 +35,9 @@ class ConnectionManager
 		ConnectionManager.UID++
 
 	findByName: (name) ->
-		for c in @connections
+		for c in @connections when c?
 			# slightly long...
-			cname = c?.e?.get('playerinfo')?.name
+			cname = c.e.get('playerinfo')?.name
 			if cname is name then return c
 
 module.exports = ConnectionManager

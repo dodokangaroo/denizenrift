@@ -22,6 +22,9 @@ class RoomManager
 		delete @rooms[r.id]
 		@count--
 
+	get: (id) ->
+		@rooms[id]
+
 	list: ->
 		@rooms
 

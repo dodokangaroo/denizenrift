@@ -5,12 +5,9 @@ class CPlayerInfo extends Component
 
 	id: 'playerinfo'
 	name: null
+	room: null
 
-	constructor: ->
+	constructor: (@name) ->
 
-CPlayerInfo.Factory = 
-
-	login: (socket, name, pass) ->
-		# do something
 
 module.exports = CPlayerInfo
