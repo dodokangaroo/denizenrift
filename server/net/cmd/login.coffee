@@ -14,6 +14,9 @@ class Login extends Handler
 
 		console.log "#{new Date()} #{@connection.id} logged in."
 
-		@connection.broadcast [CMD.SC.LOGIN_RESULT, true]		
+		# TODO: load from db etc
+		user = {}
+
+		@connection.send [CMD.SC.LOGIN_RESULT, true, user]		
 
 module.exports = Login

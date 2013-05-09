@@ -28,7 +28,7 @@ class App
 				console.log 'Connected'
 				console.log 'Waiting for cmds'
 
-				@getCmdList @con, =>
+				@getCmdList =>
 					
 					@ui.hideSpinner()
 					@ui.showLogin()
@@ -53,7 +53,7 @@ class App
 
 		# wait for cmd list from server
 		handler.intercept = (id) =>
-			# make sure it's the correct msg
+			# make sure it's the correct msg"
 			if id is CMD.SC.SET_CMDS
 				handler.intercept = null
 				handler.setHandlers CmdHandler.Factory.mainHandlers()
@@ -97,11 +97,13 @@ class App
 				@con.send [CMD.CS.LOGIN, user, pass]
 
 	loginSuccess: (user) ->
+		console.log 'Login success'
 		@ui.hideSpinner()
 		$(document).unbind 'keydown'
 		@ui.login.btnLogin.unbind 'click'
 
 	loginFailed: ->
+		console.log 'Login failed'
 		@ui.hideSpinner()
 		@ui.showLogin()
 		$('.spinner').addClass 'invisible'

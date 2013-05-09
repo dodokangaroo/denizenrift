@@ -5,6 +5,7 @@ require './cmd/setjob.coffee'
 require './cmd/userjoin.coffee'
 require './cmd/userleft.coffee'
 require './cmd/setcmds.coffee'
+require './cmd/login.coffee'
 
 class CmdHandler
 
@@ -24,11 +25,13 @@ class CmdHandler
 		try
 			data = JSON.parse msg.data
 			id = data[0]
+			console.log "< #{id}"
 			handler = @handlers[id]
 			if handler?
 				handler.handle data
 			else
 				console.log "No handler for #{id}"
+
 			@intercept id, data if @intercept?
 		catch error
 			console.log "Error: #{error}"
@@ -53,6 +56,8 @@ CmdHandler.Factory =
 		h[CMD.SC.SET_JOB] = CmdSetJob
 		h[CMD.SC.USER_JOIN] = CmdUserJoin
 		h[CMD.SC.USER_LEFT] = CmdUserLeft
+		h[CMD.SC.LOGIN_RESULT] = CmdLogin
+		#h[CMD.SC.REGISTER_RESULT] = CmdUserLeft
 		return h
 
 window.CmdHandler = CmdHandler
