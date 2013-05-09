@@ -11,25 +11,24 @@ class Entity
 
 	add: (c) ->
 		c.parent = this
-		components[c.id] = c
+		@components[c.id] = c
 		c.added()
-		for id, c2 of components
-			c2.siblingAdded c
+		c2.siblingAdded c for id, c2 of @components when c2 isnt c
+			
 
 	remove: (c) ->
 		c.removed()
-		delete components[c.id]
-		for id, c2 of components
-			c2.siblingRemoved c
+		delete @components[c.id]
+		c2.siblingRemoved c for id, c2 of @components when c2 isnt c
 
 	has: (id) ->
-		components[id]?
+		@components[id]?
 
 	get: (id) ->
-		components[id]
+		@components[id]
 
 	update: ->
-		for id, c of components
+		for id, c of @components
 			c.update()
 
 module.exports = Entity

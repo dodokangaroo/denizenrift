@@ -2,6 +2,8 @@ WebSocketServer = require('ws').Server
 
 # a user connection
 Connection = require './connection'
+# a user collection
+ConnectionManager = require './connectionmanager'
 # cmd handler for connection
 CmdHandler = require './cmdhandler'
 # create specific sets of handlers
@@ -18,7 +20,7 @@ class Server
 
 	constructor: (@webserver) ->
 
-		@connections = []
+		@connections = new ConnectionManager
 
 		# the ws library can hook onto express servers etc
 		@ws = new WebSocketServer server: @webserver
@@ -28,31 +30,22 @@ class Server
 		# connect
 		@ws.on 'connection', (socket) =>
 
-			# assign a unique id
-			id = Server.UID++
-
-			console.log "+##{id}"
-
 			# create a new user connection
-			c = new Connection @, id, socket
+			c = @connections.create @, socket
+			@connections.add c
+
+			console.log "+##{c.id}"
 
 			# send cmd list
-
 			@send c, [CMD.SC.SET_CMDS, CMD]
-
-			# store by id for fast lookups
-			@connections[id] = c
-
-			# create cmd handler
-			c.handler = new CmdHandler @, c
 
 			# assign initial handlers
 			c.handler.setHandlers CmdFactory.beforeLogin()
 			
 			# disconnect
 			socket.on 'close', =>
-				delete @connections[id]
-				console.log "-##{id}"
+				@connections.remove c
+				console.log "-##{c.id}"
 
 	# send data to a single user
 	send: (c, data) ->

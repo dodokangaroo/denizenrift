@@ -6,18 +6,18 @@ An HTML5 Multiplayer Game built with.
 * CoffeeScript
 * Jade
 * Stylus
-* Socket.IO
+* WS
+* Express
+* Browserify
 * Oryx LOFI Sprites CC (http://forums.tigsource.com/index.php?topic=8970.0)
 
 ## Installing
 
-To build we require 3 dependencies which you can install via install.sh or
-execute this as a bat file on Windows.
+sudo ./install.sh
 
 ## Running
 
-Linux:
-	> sudo ./run.sh
+sudo ./run.sh
 
 Windows:
 	
@@ -33,7 +33,7 @@ and compiled with browserify into a single file. This file gets placed into
 webserver/assets/app.js
 
 The server code is found in the server folder and it is written in coffee-script
-and uses Socket.IO to handle websocket connections and data. It is loaded by 
+and uses WS to handle websocket connections and data. It is loaded by 
 the webserver and listens on the same port.
 
 The webserver is started at webserver/app.coffee, it is a simple webserver

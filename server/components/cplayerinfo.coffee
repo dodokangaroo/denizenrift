@@ -3,7 +3,7 @@ Component = require '../ef/component'
 # info about a connected player
 class CPlayerInfo extends Component
 
-	id: 'cplayerinfo'
+	id: 'playerinfo'
 	name: null
 
 	constructor: ->
