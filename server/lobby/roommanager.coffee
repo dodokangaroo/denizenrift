@@ -9,9 +9,10 @@ class RoomManager
 	constructor: ->
 		@rooms = []
 
-	create: ->
-		r = new Room
+	create: (size) ->
+		r = new Room size
 		r.id = @getUID()
+		@add r
 		return r
 
 	add: (r) ->
@@ -27,6 +28,11 @@ class RoomManager
 
 	list: ->
 		@rooms
+
+	find: (size) ->
+		for r in @rooms when r?
+			if r.size is size and !r.full()
+				return r
 
 	getUID: ->
 		RoomManager.UID++

@@ -32,13 +32,18 @@ class CmdHandler
 
 CmdHandler.Factory =
 
-	beforeLogin: ->
+	login: ->
 		h = {}
 		h[CMD.CS.LOGIN] = require('./cmd/login')
 		h[CMD.CS.REGISTER] = require('./cmd/register')
 		return h
 
-	afterLogin: ->
+	lobby: ->
+		h = {}
+		h[CMD.CS.FIND_GAME] = require('./cmd/findgame')
+		return h
+
+	game: ->
 		h = {}
 		h[CMD.CS.MOVE] = require('./cmd/move')
 		h[CMD.CS.CHAT] = require('./cmd/chat')

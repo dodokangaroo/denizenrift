@@ -5,14 +5,22 @@ class Room
 	id: null
 	users: null
 	count: 0
+	size: 0
 
-	constructor: ->
+	constructor: (@size) ->
 		@users = new ConnectionManager
 
 	add: (c) ->
-		@users.add c
-		c.e?.get('playerinfo')?.room = @
-		@count++
+
+		info = c.e?.get('playerinfo')
+
+		if info
+
+			info.room.remove c if info.room?
+
+			@users.add c
+			info.room = @
+			@count++
 
 	remove: (c) ->
 		@users.remove c
@@ -21,6 +29,9 @@ class Room
 
 	list: ->
 		@users.connections
+
+	full: ->
+		@count >= @size
 
 	# broadcast to all users in the room and possibly exclude the sender
 	broadcast: (data, exclude = null) ->

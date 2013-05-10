@@ -4,6 +4,7 @@ CS =
 	MOVE: 'c'
 	CHAT: 'd'
 	SET_JOB: 'e'
+	FIND_GAME: 'f'
 
 SC =
 	LOGIN_RESULT: 'a'

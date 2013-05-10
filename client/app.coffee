@@ -26,15 +26,14 @@ class App
 			@connect =>
 
 				console.log 'Connected'
-				console.log 'Waiting for cmds'
 
+				# wait for server to send us cmd list
 				@getCmdList =>
 					
 					@ui.hideSpinner()
 					@ui.showLogin()
 
-					@login @con, =>
-						console.log "Logged in"
+					@login()
 
 	connect: (fn) ->
 		@con = new Connection
@@ -59,11 +58,11 @@ class App
 				handler.setHandlers CmdHandler.Factory.mainHandlers()
 				fn() if fn?
 
-	login: (fn) =>
+	login: =>
 
 		$(document).keydown (e) =>
 			if e.which is Key.ENTER
-				@ui.btnLogin.click()
+				@ui.login.btnLogin.click()
 
 		@ui.login.btnLogin.click =>
 
@@ -102,12 +101,21 @@ class App
 		$(document).unbind 'keydown'
 		@ui.login.btnLogin.unbind 'click'
 
+		@lobby()
+
 	loginFailed: ->
 		console.log 'Login failed'
 		@ui.hideSpinner()
 		@ui.showLogin()
 		$('.spinner').addClass 'invisible'
 		@ui.login.txtStatus.html 'Authentication failed'
+
+	lobby: ->
+		@ui.showLobby()
+
+		@ui.lobby.btnFindGame.click =>
+			# find a 5v5 game
+			@con.send [CMD.CS.FIND_GAME, 10]
 
 	selectHero: (user, fn) ->
 

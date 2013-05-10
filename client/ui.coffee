@@ -14,6 +14,10 @@ class UI
 	loading: null
 	canvas: null
 
+	lobby:
+		div: null
+		btnFindGame: null
+
 	constructor: ->
 		@login.div = $('.login')
 		@login.btnLogin = $('.btnlogin')
@@ -26,6 +30,9 @@ class UI
 
 		@loading = $('.loading')
 		@canvas = $('.canvas')
+
+		@lobby.div = $('.lobby')
+		@lobby.btnFindGame = $('.btnfindgame')
 
 	disableDrag: ->
 		@canvas[0].draggable = false
@@ -50,6 +57,12 @@ class UI
 
 	hideSelectHero: ->
 		@selectHero.div.addClass 'invisible'
+
+	showLobby: ->
+		@lobby.div.removeClass 'invisible'
+
+	hideLobby: ->
+		@lobby.div.addClass 'invisible'
 
 	initSelectHero: (heroes) ->
 		for i, hero of heroes

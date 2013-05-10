@@ -15,9 +15,8 @@ class Login extends Handler
 
 			name = data[1]
 
-			# swap login functionality to game functionality
-			# TODO: should be lobby functions
-			@connection.handler.setHandlers CmdFactory.afterLogin()
+			# swap login functionality to lobby functionality
+			@connection.handler.setHandlers CmdFactory.lobby()
 
 			console.log "#{new Date()} #{@connection.id} logged in."
 
@@ -25,12 +24,13 @@ class Login extends Handler
 			user = {}
 
 			# temp
-			room = @server.rooms.get(0)
-
 			info = new CPlayerInfo name
 			@connection.e.add info
 
+			###
+			room = @server.rooms.get(0)
 			room.add @connection
+			###
 
 			@connection.send [CMD.SC.LOGIN_RESULT, true, user]
 

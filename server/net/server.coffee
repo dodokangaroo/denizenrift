@@ -28,8 +28,10 @@ class Server
 		@connections = new ConnectionManager
 		@rooms = new RoomManager
 
+		###
 		r = @rooms.create()
 		@rooms.add r
+		###
 
 		# the ws library can hook onto express servers etc
 		@ws = new WebSocketServer server: @webserver
@@ -51,7 +53,7 @@ class Server
 		@send c, [CMD.SC.SET_CMDS, CMD]
 
 		# assign initial handlers
-		c.handler.setHandlers CmdFactory.beforeLogin()
+		c.handler.setHandlers CmdFactory.login()
 		
 		# disconnect
 		socket.on 'close', =>
