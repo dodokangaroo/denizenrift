@@ -6,6 +6,7 @@ require './cmd/userjoin.coffee'
 require './cmd/userleft.coffee'
 require './cmd/setcmds.coffee'
 require './cmd/login.coffee'
+require './cmd/joinedgame.coffee'
 
 class CmdHandler
 
@@ -57,6 +58,7 @@ CmdHandler.Factory =
 		h[CMD.SC.USER_JOIN] = CmdUserJoin
 		h[CMD.SC.USER_LEFT] = CmdUserLeft
 		h[CMD.SC.LOGIN_RESULT] = CmdLogin
+		h[CMD.SC.JOINED_GAME] = CmdJoinedGame
 		#h[CMD.SC.REGISTER_RESULT] = CmdUserLeft
 		return h
 

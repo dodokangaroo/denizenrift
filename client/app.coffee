@@ -114,12 +114,21 @@ class App
 		@ui.showLobby()
 
 		@ui.lobby.btnFindGame.click =>
+
+			@ui.hideLobby()
+			@ui.showSpinner()
 			# find a 5v5 game
 			@con.send [CMD.CS.FIND_GAME, 10]
 
+	joinedRoom: (roomID, users) ->
+		@ui.hideSpinner()
+		@ui.showPreGameLobby()
+
+		@ui.initPreGameLobbyHeroes Config.Jobs
+
 	selectHero: (user, fn) ->
 
-		@ui.showSelectHero()	
+		#@ui.showSelectHero()	
 
 		@ui.heroBoxes().live 'click', (e) =>
 

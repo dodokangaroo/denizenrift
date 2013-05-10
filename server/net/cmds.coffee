@@ -7,6 +7,7 @@ CS =
 	FIND_GAME: 'f'
 
 SC =
+	SET_CMDS: 'setcmds'
 	LOGIN_RESULT: 'a'
 	REGISTER_RESULT: 'b'
 	MOVE: 'c'
@@ -14,7 +15,7 @@ SC =
 	SET_JOB: 'e'
 	USER_JOIN: 'f'
 	USER_LEFT: 'g'
-	SET_CMDS: 'setcmds'
+	JOINED_GAME: 'h'
 
 module.exports = 
 	CS: CS

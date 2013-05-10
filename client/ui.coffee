@@ -7,16 +7,16 @@ class UI
 		txtPassword: null
 		txtStatus: null
 
-	selectHero:
-		div: null
-		box: null
-
 	loading: null
 	canvas: null
 
 	lobby:
 		div: null
 		btnFindGame: null
+
+	preGameLobby:
+		div: null
+		heroes: null
 
 	constructor: ->
 		@login.div = $('.login')
@@ -25,14 +25,14 @@ class UI
 		@login.txtPassword = $('.txtpassword')
 		@login.txtStatus = $('.txtstatus')
 
-		@selectHero.div = $('.selecthero')
-		@selectHero.box = $('.selectherobox')
-
 		@loading = $('.loading')
 		@canvas = $('.canvas')
 
 		@lobby.div = $('.lobby')
 		@lobby.btnFindGame = $('.btnfindgame')
+
+		@preGameLobby.div = $('.pregamelobby')
+		@preGameLobby.heroes = $('.pregamelobby .heroes')
 
 	disableDrag: ->
 		@canvas[0].draggable = false
@@ -52,19 +52,19 @@ class UI
 	hideLogin: ->
 		@login.div.addClass 'invisible'
 
-	showSelectHero: ->
-		@selectHero.div.removeClass 'invisible'
-
-	hideSelectHero: ->
-		@selectHero.div.addClass 'invisible'
-
 	showLobby: ->
 		@lobby.div.removeClass 'invisible'
 
 	hideLobby: ->
 		@lobby.div.addClass 'invisible'
 
-	initSelectHero: (heroes) ->
+	showPreGameLobby: ->
+		@preGameLobby.div.removeClass 'invisible'
+
+	hidePreGameLobby: ->
+		@preGameLobby.div.addClass 'invisible'
+
+	initPreGameLobbyHeroes: (heroes) ->
 		for i, hero of heroes
 			txt = """
 				  <div class='herobox' value='#{i}'>
@@ -72,7 +72,7 @@ class UI
 					<div class='name unselectable'>#{hero.name}</div>
 				  </div>
 				  """
-			@selectHero.box.append txt
+			@preGameLobby.heroes.append txt
 
 	heroBoxes: ->
 		$('.herobox')
