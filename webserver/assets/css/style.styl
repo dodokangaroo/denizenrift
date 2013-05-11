@@ -58,6 +58,11 @@ body
 	width: w px
 	height: h px
 
+.mainscreen
+	background-color: rgba(0, 0, 0, 90%)
+	width: w px
+	height: h px
+
 .txtbox
 	border: 2px solid #DDD
 	width: 120px
@@ -131,13 +136,8 @@ body
 	height: 24px
 	background-image: url(../img/error.png)
 
-.heroes
-	margin: 0 auto
-	padding-top: 224px
-	width: 384px
-
 .herobox
-	width: 96px
+	width: 80px
 	display: inline-block
 	margin-top: 8px
 
@@ -175,9 +175,9 @@ body
 .herobox:hover > .portrait.hero3
 	background-position: -96px 32px
 .portrait.hero4
-	background-position: -32px 0
+	background-position: -128px 0
 .herobox:hover > .portrait.hero4
-	background-position: -32px 32px
+	background-position: -128px 32px
 
 cwidth = 250
 
@@ -210,3 +210,28 @@ cwidth = 250
 
 .chatin:focus
 	outline: none
+
+.teamlist
+	display: inline-block
+	width: 100px
+	height: 100%
+	vertical-align: top
+
+.heroes
+	display: inline-block
+	padding-top: 10px
+	width: 804px
+	vertical-align: top
+
+.player
+	width: 80px
+	height: 80px
+	margin: 10px
+
+	background-color: rgba(0, 0, 0, 50%)
+
+.player > .name
+	color: #FFF
+	font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace
+	font-size: 10px
+	text-align: center

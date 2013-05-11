@@ -17,6 +17,10 @@ class UI
 	preGameLobby:
 		div: null
 		heroes: null
+		me:
+			div: null
+			hero: null
+			name: null
 
 	constructor: ->
 		@login.div = $('.login')
@@ -32,7 +36,11 @@ class UI
 		@lobby.btnFindGame = $('.btnfindgame')
 
 		@preGameLobby.div = $('.pregamelobby')
-		@preGameLobby.heroes = $('.pregamelobby .heroes')
+		@preGameLobby.heroes = $('.pregamelobbybox .heroes')
+
+		@preGameLobby.me.div = $('.pregamelobbybox .yourteam .player.p0')
+		@preGameLobby.me.hero = $('.pregamelobbybox .yourteam .player.p0 .herobox .portrait')
+		@preGameLobby.me.name = $('.pregamelobbybox .yourteam .player.p0 .name')
 
 	disableDrag: ->
 		@canvas[0].draggable = false
@@ -66,6 +74,7 @@ class UI
 
 	initPreGameLobbyHeroes: (heroes) ->
 		for i, hero of heroes
+			continue if i is '0'
 			txt = """
 				  <div class='herobox' value='#{i}'>
 					<div class='portrait hero#{i}'></div>

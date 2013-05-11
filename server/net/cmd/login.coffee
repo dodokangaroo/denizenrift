@@ -14,6 +14,7 @@ class Login extends Handler
 		if data.length is 3
 
 			name = data[1]
+			pass = data[2]
 
 			# swap login functionality to lobby functionality
 			@connection.handler.setHandlers CmdFactory.lobby()
@@ -21,7 +22,8 @@ class Login extends Handler
 			console.log "#{new Date()} #{@connection.id} logged in."
 
 			# TODO: load from db etc
-			user = {}
+			user =
+				name: name
 
 			# temp
 			info = new CPlayerInfo name

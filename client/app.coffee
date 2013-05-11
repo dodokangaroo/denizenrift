@@ -9,6 +9,7 @@ class App
 
 	ui: null
 	con: null
+	user: null
 
 	constructor: ->
 		# page load
@@ -95,7 +96,7 @@ class App
 
 				@con.send [CMD.CS.LOGIN, user, pass]
 
-	loginSuccess: (user) ->
+	loginSuccess: (@user) ->
 		console.log 'Login success'
 		@ui.hideSpinner()
 		$(document).unbind 'keydown'
@@ -126,19 +127,17 @@ class App
 
 		@ui.initPreGameLobbyHeroes Config.Jobs
 
-	selectHero: (user, fn) ->
-
-		#@ui.showSelectHero()	
+		@ui.preGameLobby.me.name.html @user.name
 
 		@ui.heroBoxes().live 'click', (e) =>
+			heroID = $(e.currentTarget).attr 'value'
+			#@ui.heroBoxes().unbind 'click'
 
-			@ui.hideSelectHero().addClass 'invisible'
-
-			heroIndex = $(e.currentTarget).attr 'value'
-
-			@ui.heroBoxes().unbind 'click'
-
-			fn heroIndex
+			herobox = @ui.preGameLobby.me.hero
+			# remove all classes
+			herobox.removeClass()
+			herobox.addClass 'portrait'
+			herobox.addClass "hero#{heroID}"
 
 # begin
 new App
