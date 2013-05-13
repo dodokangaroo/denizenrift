@@ -7,10 +7,15 @@ class CmdJoinedGame extends Handler
 
 	handle: (data) ->
 
-		if data.length is 3
-			roomid = data[1]
-			users = data[2]
+		roomid = data[1]
+		team = data[2]
+		users = data[3]
 
-			@app.joinedRoom roomid, users
+		console.log JSON.stringify users
+
+		@app.joinedRoom roomid, users
+
+	validate: (data) ->
+		data.length is 4
 
 window.CmdJoinedGame = CmdJoinedGame

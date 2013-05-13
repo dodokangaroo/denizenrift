@@ -29,9 +29,12 @@ class CmdHandler
 			console.log "< #{id}"
 			handler = @handlers[id]
 			if handler?
-				handler.handle data
+				if handler.validate data
+					handler.handle data
+				else
+					console.log "Invalid data #{data}"
 			else
-				console.log "No handler for #{id}"
+				console.log "No handler for #{data}"
 
 			@intercept id, data if @intercept?
 		catch error

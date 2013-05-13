@@ -27,9 +27,6 @@ class FindGame extends Handler
 			# add user to room
 			room.add @connection
 
-			# null should serialize room connections
-			@connection.send [CMD.SC.JOINED_GAME, room.id, null]
-
 			# change handlers from lobby to game
 			#@connection.handler.setHandlers CmdFactory.game()
 

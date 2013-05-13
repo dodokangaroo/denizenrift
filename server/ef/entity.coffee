@@ -11,14 +11,14 @@ class Entity
 
 	add: (c) ->
 		c.parent = this
-		@components[c.id] = c
+		@components[c.cid] = c
 		c.added()
 		c2.siblingAdded c for id, c2 of @components when c2 isnt c
 			
 
 	remove: (c) ->
 		c.removed()
-		delete @components[c.id]
+		delete @components[c.cid]
 		c2.siblingRemoved c for id, c2 of @components when c2 isnt c
 
 	has: (id) ->

@@ -5,7 +5,7 @@ DependantAttribute = require './attr/dependantattribute'
 # a collection of attributes for a hero, item, etc
 class CAttribute extends Component
 
-	id: 'attribute'
+	cid: 'attribute'
 	attributes: null
 
 	constructor: ->

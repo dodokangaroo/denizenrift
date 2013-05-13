@@ -7,9 +7,11 @@ class CmdSetCmds extends Handler
 
 	handle: (data) ->
 
-		if data.length is 2
-			window.CMD = data[1]
+		window.CMD = data[1]
 
-			console.log 'Received cmd list'
+		console.log 'Received cmd list'
+
+	validate: (data) ->
+		data.length is 2
 
 window.CmdSetCmds = CmdSetCmds

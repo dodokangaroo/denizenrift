@@ -7,10 +7,12 @@ class CmdUserJoin extends Handler
 
 	handle: (data) ->
 
-		if data.length is 2
-			u = data[1]
+		u = data[1]
 
-			console.log "User #{u.id} joined"
-			@app.game.addUser u
+		console.log "User #{u.id} joined"
+		#@app.game.addUser u
+
+	validate: (data) ->
+		data.length is 2
 
 window.CmdUserJoin = CmdUserJoin

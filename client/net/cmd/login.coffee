@@ -7,13 +7,15 @@ class CmdLogin extends Handler
 
 	handle: (data) ->
 
-		if data.length is 3
-			result = data[1]
-			user = data[2]
+		result = data[1]
+		user = data[2]
 
-			if result
-				@app.loginSuccess user
-			else
-				@app.loginFailed()
+		if result
+			@app.loginSuccess user
+		else
+			@app.loginFailed()
+
+	validate: (data) ->
+		data.length is 3
 
 window.CmdLogin = CmdLogin

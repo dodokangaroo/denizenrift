@@ -7,12 +7,14 @@ class CmdSetJob extends Handler
 
 	handle: (data) ->
 
-		if data.length is 3
-			id = data[1]
-			job = data[2]
+		id = data[1]
+		job = data[2]
 
-			user = @app.game.users[id]
-			return if !user? #error user doesnt exist
-			user.setJob job			
+		user = @app.game.users[id]
+		return if !user? #error user doesnt exist
+		user.setJob job
+
+	validate: (data) ->
+		data.length is 3	
 
 window.CmdSetJob = CmdSetJob

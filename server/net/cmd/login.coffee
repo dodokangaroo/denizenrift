@@ -19,14 +19,14 @@ class Login extends Handler
 			# swap login functionality to lobby functionality
 			@connection.handler.setHandlers CmdFactory.lobby()
 
-			console.log "#{new Date()} #{@connection.id} logged in."
+			console.log "#{new Date()} ##{@connection.id} logged in."
 
 			# TODO: load from db etc
 			user =
 				name: name
 
 			# temp
-			info = new CPlayerInfo name
+			info = new CPlayerInfo @connection, name
 			@connection.e.add info
 
 			###

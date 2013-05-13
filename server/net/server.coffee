@@ -20,9 +20,7 @@ class Server
 	connections: null
 	# a list of rooms
 	rooms: null
-	# for generating unique connection ids
-	@UID: 0
-
+	
 	constructor: (@webserver) ->
 
 		@connections = new ConnectionManager
@@ -47,7 +45,7 @@ class Server
 		c = @connections.create @, socket
 		@connections.add c
 
-		console.log "+##{c.id}"
+		console.log "#{new Date()} ##{c.id} connected"
 
 		# send cmd list
 		@send c, [CMD.SC.SET_CMDS, CMD]
@@ -66,7 +64,7 @@ class Server
 		room.remove c if room?
 
 		@connections.remove c
-		console.log "-##{c.id}"
+		console.log "#{new Date()} ##{c.id} disconnected"
 
 	# send data to a single user
 	send: (c, data) ->
